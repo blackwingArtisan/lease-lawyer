@@ -5,6 +5,8 @@ Notable changes to Lease Lawyer. The Kiro sessions and what they changed are rec
 ## Unreleased
 
 ### Added
+- An MCP server for the prover (`tools/mcp-prover/`, `npm run mcp:prover`) with `list_rules`, `read_lease`, `ask_topic` and `explain_proof`, and a Kiro MCP config that registers it alongside Context7 and the AWS Documentation server.
+- Kiro IDE `.kiro.hook` copies of the extraction and rule-base guards, kept in step with the agent hooks by a unit test.
 - README media: a GIF of the first-visit tour and three stills (a proved No, a Can't tell, the phone layout), regenerated with `npm run media` against a running build.
 - Phone flow: case files swipe sideways in their own row, the lease folds under a "Read the lease (13 facts)" button and opens itself when a proof step points into it, and a floating "Back to the answer" button returns to the verdict.
 - PDF upload. The text layer is read in the browser with pdf.js (loaded only when a PDF is chosen), wrapped lines are reflowed into whole sentences so quotes stay verbatim, and scans, damaged files and very long documents are refused with a reason. A sample lease PDF can be downloaded from the "Your own" card; it reads to exactly the same facts as its text version.
@@ -26,6 +28,7 @@ Notable changes to Lease Lawyer. The Kiro sessions and what they changed are rec
 - The hero line now states the promise: "Chatbots guess about your lease. Lease Lawyer proves it, or says it can't tell."
 
 ### Fixed
+- Kiro hook matchers now fire on absolute paths as well as repo-relative ones.
 - Pasted text over 200 KB is refused with a reason instead of being cut short, which could have dropped clauses and made the lease look silent.
 - A clause that defers to another document ("Entry by Landlord is governed by Schedule A") is flagged as unreadable even when it names no time or amount.
 - When the fact a proof needs sits in an unreadable clause, the answer names that clause ("Can't tell. Section 5 ...") instead of saying the lease is missing the fact.

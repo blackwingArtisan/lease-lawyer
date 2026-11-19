@@ -19,7 +19,8 @@
     "test:e2e": "playwright test",
     "check": "npm run typecheck && npm test",
     "sample-pdf": "node scripts/make-sample-pdf.mjs",
-    "media": "node scripts/capture-media.mjs"
+    "media": "node scripts/capture-media.mjs",
+    "mcp:prover": "vite build -c tools/mcp-prover/vite.config.ts && node tools/mcp-prover/dist/server.js"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "5.3.0",
@@ -38,6 +39,7 @@
     "@anthropic-ai/sdk": "1.10.0"
   },
   "devDependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
     "@playwright/test": "1.65.1",
     "@types/node": "26.6.6",
     "@types/react": "19.3.0",

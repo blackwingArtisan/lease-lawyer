@@ -13,7 +13,10 @@ src/
 functions/api/  Cloudflare Pages Functions: read-lease, translate
 tests/unit/     Vitest, one file per module
 tests/e2e/      Playwright, desktop and phone projects; fixtures/ holds an extra lease to upload
-.kiro/          steering, specs and hooks
+tools/mcp-prover/  stdio MCP server exposing the prover (list_rules, read_lease, ask_topic, explain_proof); npm run mcp:prover
+scripts/        sample PDF generator and README media capture
+public/samples/ the downloadable sample lease PDF
+.kiro/          steering, specs, hooks (agent JSON plus IDE .kiro.hook copies) and settings/mcp.json
 ```
 
 ## Conventions

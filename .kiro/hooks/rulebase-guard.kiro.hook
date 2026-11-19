@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "name": "Rule base guard",
+  "description": "Kiro IDE copy of rulebase-guard.json: when the Prolog rule base, the prover or the rule text is edited, keep every answer provable and cited, and ask for the matching tests.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "src/logic/rulebase.pl",
+      "src/logic/prover.pl",
+      "src/logic/rules.ts"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "You just edited the Prolog rule base, the prover or the rule text (src/logic/rulebase.pl, prover.pl or rules.ts). Before continuing: give every rule id in rulebase.pl plain-English text in src/logic/rules.ts, with an answer sentence if its head is verdict/2, and remove text for ids that no longer exist; make sure no topic can prove both yes and no; keep lease facts closed-world (absent/1 only when no clause states the fact, and never for a predicate that has an unread/2 entry, in any prover mode); and add a row to the matrix in tests/unit/rulebase.test.ts for each new verdict rule. Then run `npm test` and fix the code, not the test, unless .kiro/specs/proof-chain-answers/requirements.md says the test is wrong."
+  }
+}

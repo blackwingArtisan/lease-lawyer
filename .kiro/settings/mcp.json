@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "lease-lawyer-prover": {
+      "command": "npm",
+      "args": ["run", "-s", "mcp:prover"],
+      "disabled": false,
+      "autoApprove": ["list_rules", "read_lease", "ask_topic", "explain_proof"]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@4.7.3"],
+      "disabled": false,
+      "autoApprove": []
+    },
+    "aws-docs": {
+      "command": "uvx",
+      "args": ["awslabs.aws-documentation-mcp-server@1.2.6"],
+      "env": { "FASTMCP_LOG_LEVEL": "ERROR" },
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}
