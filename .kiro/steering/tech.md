@@ -4,12 +4,12 @@ inclusion: always
 # Tech stack and engineering rules
 
 ## Stack
-- TypeScript, `strict` and `noUncheckedIndexedAccess`. Node 24+.
+- TypeScript, `strict` and `noUncheckedIndexedAccess`. Node 22 or later (`engines` in `package.json`).
 - React 19 single-page app built with Vite. Plain CSS with design tokens (custom properties); no UI framework.
 - Logic: Tau Prolog 0.3.4 (BSD-3-Clause), run in the browser. Loaded as a classic script because it assigns to undeclared names, which a strict-mode bundle forbids; loaded as CommonJS under Node for tests.
 - Validation: zod at every trust boundary (API bodies, model output).
 - Tests: Vitest for units, Playwright (Chromium, `--disable-audio-output`) for end-to-end tests against the production build.
-- Deploy target (free): Cloudflare Pages for the static app, Pages Functions for the `/api` endpoints. Not deployed from this repo.
+- Deploy target (free): Cloudflare Pages for the static app, Pages Functions for the `/api` endpoints. `wrangler.toml` holds the project settings; `npx wrangler pages deploy` publishes `dist/` and `functions/`.
 
 ## Logic rules
 - The rule base lives in `src/logic/rulebase.pl` as `rule(Id, Head, Body)` terms. Every rule id has plain-English text in `src/logic/rules.ts`; a unit test keeps the two in sync.

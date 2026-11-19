@@ -17,14 +17,39 @@ How Kiro was used on Lease Lawyer: which Kiro features the repository uses, what
 - **Facts read from an unseen lease** (written after the reader, with wording unlike the samples): 1 of 10 before session 1, 7 of 10 after it, 10 of 10 after session 2.
 - **Confident answers resting on a "silent" lease that was not silent:** 4 of 8 topics before session 1, 0 after session 2, on that lease and on a second unseen lease.
 - **Unit tests:** 92 before session 1, 180 after it, 198 after session 2. Playwright 7 before, 8 after.
+- **Today:** 238 unit tests and 26 Playwright tests pass from a clean clone. The 40 unit and 18 end-to-end tests added since session 2 came with the work built outside Kiro, listed in [Who built what](#who-built-what).
 
 ## Timeline
 - **2026-11-18.** Steering, the first spec and the hooks drafted in Kiro's formats; the first version of the app built against the spec task by task.
 - **2026-11-19, 02:58 to 03:16 UTC.** Session 1: spec review, wider reader, coverage check and the "Can't tell" answer, hook clean-up.
 - **2026-11-19, 03:18 to 03:20 UTC.** Session 2: three gaps found on an unseen lease, fixed with tests.
+- **2026-11-19, 04:47 to 06:13 UTC.** Fourteen more commits built outside Kiro: the Can't tell stamp, the trick lease, the seam, the tour, the suture, PDF upload, the phone layout, the MCP prover server and the deploy settings.
+
+## Who built what
+Kiro's steering, spec and hooks were written first, in Kiro's formats, and every later change was made against them: spec tasks are checked off only when code and a test exist. But most of the code was not written by Kiro. One of the 17 commits holds Kiro's work; the other 16 were written outside Kiro, with Claude Code.
+
+| # | Commit | Built by | What it changed |
+| --- | --- | --- | --- |
+| 1 | `aba122f` Build Lease Lawyer | Outside Kiro | The first app, built task by task against the Kiro-format steering, spec and hooks: parser, extractor, verifier, Prolog prover and rule base, UI, 92 unit and 7 end-to-end tests |
+| 2 | `54ccaaf` Document the Bedrock client | Outside Kiro | Bedrock naming notes and an IDE-format rule-base hook |
+| 3 | `0e41ea6` Answer "can't tell" instead of "silent" | **Kiro, sessions 1 and 2** | EARS spec rewrite and requirement 8, the wider reader, the coverage check, `unread/2`, the Can't tell answer, two new hooks, 106 new unit tests and 1 end-to-end test. The `PW_PORT` override in `playwright.config.ts` was the maintainer's |
+| 4 | `ee3da12` Route small-pet and deposit-back questions | Outside Kiro | Classifier wording and two more falsely silent clause kinds |
+| 5 | `f371edf` Bring the verdict into view | Outside Kiro | Scroll and focus the answer; tighter masthead |
+| 6 | `85ab55a` Give "Can't tell" its own stamp | Outside Kiro | Amber stamp, outlined unreadable clauses, contrast fix |
+| 7 | `37ded49` Add Hollowmere Flats | Outside Kiro | The trick sample lease |
+| 8 | `f69075b` Show the seam on every answer | Outside Kiro | Seam strip, lightning, fog |
+| 9 | `73177bb` Run a 30-second tour | Outside Kiro | First-visit tour and replay chip |
+| 10 | `f6a608f` Sew each cited quote to its proof step | Outside Kiro | The suture |
+| 11 | `56bd1bc` Rewrite the README | Outside Kiro | README |
+| 12 | `e051345` Read PDF leases in the browser | Outside Kiro | PDF upload, paste limit, deferral clauses; spec tasks 8, 12, 24 and 25 closed |
+| 13 | `5b5bb99` Fold the lease on phones | Outside Kiro | Phone layout |
+| 14 | `01a4eb0` Show the tour and three stills | Outside Kiro | README media and capture script |
+| 15 | `89f1a7b` Expose the prover over MCP | Outside Kiro | MCP prover server, hook matchers, IDE-format hooks restored |
+| 16 | `b00b8af` Add Cloudflare Pages settings | Outside Kiro | `wrangler.toml`, `public/_headers` |
+| 17 | `09fcd5b` Lead the Kiro log with a features table | Outside Kiro | This log's layout |
 
 ## Before the Kiro sessions
-The steering files, the hooks (`.kiro/hooks/*.json` for the agent, plus `.kiro/hooks/rulebase-guard.kiro.hook` in the older Kiro IDE format, which session 1 folded into the JSON hook) and the initial spec were drafted before the Kiro sessions, in Kiro's formats, and the first version of the app was built against them task by task.
+The steering files, the hooks (`.kiro/hooks/*.json` for the agent, plus `.kiro/hooks/rulebase-guard.kiro.hook` in the Kiro IDE format) and the initial spec were drafted before the Kiro sessions, in Kiro's formats, and the first version of the app was built against them task by task. Session 1 folded the IDE hook into `rulebase-guard.json` and deleted it. Commit 15, outside Kiro, added IDE-format copies of both guards back (`extraction-guard.kiro.hook`, `rulebase-guard.kiro.hook`) so the guards also apply when the project is opened in the Kiro IDE; a unit test keeps each copy's prompt in step with its JSON hook.
 
 The steering sets the rules Kiro should hold the project to: no Yes or No without a proof, every step cited, unknown answers name what is missing, nothing read from a lease is kept unless its quote is verbatim, and every AI step sits behind an adapter with a free local default.
 
@@ -101,7 +126,7 @@ The maintainer ran the local reader on a lease neither of us had seen. It read 7
 Tests were added to `tests/unit/extract.test.ts` and `tests/unit/coverage.test.ts` with different wordings. The three sample leases' fact lists and the 33-case verdict matrix are unchanged. `npm run typecheck` and `npm test` pass (198 tests). Playwright was not run by Kiro.
 
 ## Appendix: exact prompts
-Quoted verbatim, as sent to `kiro-cli`. They refer to this log's earlier section names.
+Quoted as sent to `kiro-cli`, except that internal working labels are replaced by the [bracketed] words. They refer to this log's earlier section names.
 
 ### Session 1 prompt
 
@@ -118,18 +143,18 @@ Quoted verbatim, as sent to `kiro-cli`. They refer to this log's earlier section
 >
 > 3. Hooks. Kiro's current hook format is .kiro/hooks/<name>.json with "version": "v1" and a "hooks" array (fields: name, description, trigger in PascalCase such as PostFileSave or Stop, matcher regex against the file path, action with type "command" + command or type "agent" + prompt, timeout in seconds, enabled). Check every file in .kiro/hooks/ against that format and fix anything invalid. rulebase-guard.kiro.hook is an older IDE-format duplicate of rulebase-guard.json: fold anything it covers that the JSON hook does not (it also watches src/logic/rules.ts) into rulebase-guard.json, then delete the .kiro.hook file, and update the README "Built with Kiro" section and anything else that mentions it. Add a small agent hook, extraction-guard.json, that fires on edits to src/lease/extract.ts or the coverage check, restates that every quote must stay verbatim and that an unreadable clause must give "can't tell", never "silent", and asks for an extraction test. Keep the steering files accurate.
 >
-> 4. KIRO-LOG.md. Its "## Kiro review" section currently says Kiro's review "follows below", but nothing follows. Replace that sentence with one plain sentence pointing to the new section, then append a new section "## Kiro pass (kiro-cli v3, bonus credits)" that lists: each spec change (criteria tightened, tasks checked, tasks added), each source and test file you changed and why, the hook changes, and anything you could not do. Leave a line "Credits used: TO BE FILLED" for the operator to fill in.
+> 4. KIRO-LOG.md. Its "## Kiro review" section currently says Kiro's review "follows below", but nothing follows. Replace that sentence with one plain sentence pointing to the new section, then append a new section "## Kiro pass (kiro-cli v3, [credits])" that lists: each spec change (criteria tightened, tasks checked, tasks added), each source and test file you changed and why, the hook changes, and anything you could not do. Leave a line [for the credit reading], for [the maintainer] to fill in.
 >
-> When you finish, run `npm run typecheck` and `npm test` and fix any failures you caused. Do not run the Playwright suite yourself; the operator will.
+> When you finish, run `npm run typecheck` and `npm test` and fix any failures you caused. Do not run the Playwright suite yourself; [the maintainer] will.
 
 ### Session 2 prompt
 
-> You are continuing work in the Lease Lawyer repository. Read .kiro/steering/*.md and the section "## Kiro pass (kiro-cli v3, bonus credits)" at the end of KIRO-LOG.md, which describes the extraction and "can't tell" work you just did. Same rules as before: work only inside this repository, no npm install or dependency changes, no git, no network, invented sample data only.
+> You are continuing work in the Lease Lawyer repository. Read .kiro/steering/*.md and the section "## Kiro pass (kiro-cli v3, [credits])" at the end of KIRO-LOG.md, which describes the extraction and "can't tell" work you just did. Same rules as before: work only inside this repository, no npm install or dependency changes, no git, no network, invented sample data only.
 >
-> The operator checked the change on a lease neither of you had seen. The local reader read 7 of its 10 facts, and the coverage check correctly turned the deposit and early-termination questions into "Can't tell" answers. Three things are still worth fixing, and the first is a "nothing made up" problem:
+> [The maintainer] checked the change on a lease neither of you had seen. The local reader read 7 of its 10 facts, and the coverage check correctly turned the deposit and early-termination questions into "Can't tell" answers. Three things are still worth fixing, and the first is a "nothing made up" problem:
 >
 > 1. A clause "4. LATE RENT. Rent paid after the third (3rd) of the month incurs a $45 late fee." gives late_fee(45) but no grace fact and no unread entry, so the late-fee proof contains the step "The lease says nothing about the grace period before a late fee", which is not true. Widen the late_fee_grace_days cue in src/lease/coverage.ts so that any clause with a late-fee cue and a day-of-month or day-count reference ("after the 3rd", "after the third (3rd) of the month", "past the fifth day", "more than two days late", "on the 6th") and no grace fact is unread for late_fee_grace_days. Do not guess the grace days from a day of the month.
 > 2. A clause "5. SECURITY. Upon signing, Lessee shall deposit $1,390 with Lessor as security. Lessor may apply the security only to unpaid rent and to damage in excess of normal wear and tear." was not read. Read "deposit $X ... as security" (and similar, such as "a sum of $X as a security deposit", "security of $X") as security_deposit, and "damage in excess of normal wear and tear" / "damage beyond ordinary wear" / "wear and tear excepted" as deposit_deduction(damage_beyond_wear).
 > 3. A clause "9. EARLY TERMINATION. Should Lessee need to break this Agreement, Lessee may do so with thirty (30) days' written notice and payment of one (1) month's rent as a termination fee." was not read. Read "break this Agreement/Lease", "end ... early" and similar under an EARLY TERMINATION heading, with the notice in days and the fee in months' rent, as early_termination_option(any, 30, 1).
 >
-> For each, add a Vitest case in tests/unit/extract.test.ts or tests/unit/coverage.test.ts using different invented wording in the same spirit (not only these exact sentences), keep the three sample leases' fact lists and the 33-case verdict matrix unchanged, and keep every quote verbatim. Then add a short "### Follow-up call" subsection at the end of the Kiro pass section in KIRO-LOG.md saying what the operator's unseen-lease check found and what you changed, with a line "Credits used: TO BE FILLED". Run `npm run typecheck` and `npm test` and fix any failures you caused. Do not run Playwright.
+> For each, add a Vitest case in tests/unit/extract.test.ts or tests/unit/coverage.test.ts using different invented wording in the same spirit (not only these exact sentences), keep the three sample leases' fact lists and the 33-case verdict matrix unchanged, and keep every quote verbatim. Then add a short "### Follow-up call" subsection at the end of the Kiro pass section in KIRO-LOG.md saying what [the maintainer's] unseen-lease check found and what you changed, with a line [for the credit reading]. Run `npm run typecheck` and `npm test` and fix any failures you caused. Do not run Playwright.

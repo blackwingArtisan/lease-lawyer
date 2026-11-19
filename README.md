@@ -60,7 +60,7 @@ Kiro's spec-driven workflow shaped the project; [KIRO-LOG.md](KIRO-LOG.md) recor
 - **Spec** (`.kiro/specs/proof-chain-answers/`): requirements in EARS form, the design, and a task list in which every task names its requirements and is checked only when code and a test exist.
 - **Hooks** (`.kiro/hooks/`): run the unit tests when source or Prolog files are saved, guard the rule base and rule text, guard the extractor and coverage check, and type-check when the agent stops. The two guards also ship as Kiro IDE `.kiro.hook` files with the same prompt; a unit test keeps each pair in step and checks that every matcher fires on both repo-relative and absolute paths.
 - **MCP** (`.kiro/settings/mcp.json`): the project's own prover as an MCP server (`tools/mcp-prover/`, tools `list_rules`, `read_lease`, `ask_topic` and `explain_proof`), so an agent editing `rulebase.pl` can prove a topic against a real lease before it saves; plus Context7 for library docs and the AWS Documentation server for Bedrock. The prover server is covered by unit tests over the MCP protocol.
-- **The Kiro pass** reviewed the spec against the code, tightened it into EARS, and built the wider reader, the coverage check and the "Can't tell" answer; unit tests went from 92 to 198 across that pass and its follow-up.
+- **The Kiro pass** reviewed the spec against the code, tightened it into EARS, and built the wider reader, the coverage check and the "Can't tell" answer; unit tests went from 92 to 198 across that pass and its follow-up. Most of the rest was built outside Kiro; the log maps every commit to who built it. Today: 238 unit and 26 end-to-end tests.
 
 ## How it works
 
