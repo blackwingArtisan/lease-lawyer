@@ -1,0 +1,23 @@
+---
+inclusion: always
+---
+# Structure
+
+```
+src/
+  lease/        parse a lease into clauses, extract facts, verify quotes, the fact vocabulary, sample leases
+  logic/        prover.pl and rulebase.pl, the Tau Prolog session, ask() and proof-tree to proof-step conversion
+  question/     the keyword classifier for the local translator
+  adapters/     reader and translator ports: local, remote (browser to API), bedrock (server only), zod schemas
+  ui/           React components and the app state hook; styles.css holds every design token
+functions/api/  Cloudflare Pages Functions: read-lease, translate
+tests/unit/     Vitest, one file per module
+tests/e2e/      Playwright, desktop and phone projects; fixtures/ holds an extra lease to upload
+.kiro/          steering, specs and hooks
+```
+
+## Conventions
+- Lease clause ids are `s<number>`; fact ids are `f<n>` in extraction order.
+- A new topic needs: a `TOPICS` entry, `verdict(<topic>, yes|no)` rules, rule text with an `answer` for each verdict rule, classifier patterns, and rows in the rule-base test matrix.
+- A new predicate needs: a `PREDICATES` entry (arguments, topic, describe), an extractor rule, and an extraction test.
+- Sample data is fictional: invented companies, people and streets, 555-01xx phone numbers, example.com email.

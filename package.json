@@ -1,0 +1,47 @@
+{
+  "name": "lease-lawyer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Plain answers to lease questions, each backed by a Prolog proof chain that cites the exact lease clauses and rules it used.",
+  "license": "MIT",
+  "author": "Stubborn Otter Software",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "vite --port 3160 --strictPort",
+    "build": "vite build",
+    "preview": "vite preview --port 3161 --strictPort",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "check": "npm run typecheck && npm test"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "@fontsource/im-fell-english": "5.3.0",
+    "@fontsource/im-fell-english-sc": "5.3.0",
+    "@fontsource/special-elite": "5.3.0",
+    "@fontsource/spectral": "5.3.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "tau-prolog": "0.3.4",
+    "zod": "4.6.7"
+  },
+  "optionalDependencies": {
+    "@anthropic-ai/bedrock-sdk": "1.1.2",
+    "@anthropic-ai/sdk": "1.10.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1",
+    "@types/node": "26.6.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.3.0",
+    "typescript": "5.9.3",
+    "vite": "8.3.8",
+    "vitest": "5.1.0"
+  }
+}

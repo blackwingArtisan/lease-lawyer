@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Rule base guard",
+      "description": "When the agent edits the Prolog rule base or prover, restate the rules that keep every answer provable and cited, and ask for the matching tests before it continues.",
+      "trigger": "PostFileSave",
+      "matcher": "^src/logic/(rulebase|prover)\\.pl$",
+      "action": {
+        "type": "agent",
+        "prompt": "You just edited the Prolog rule base or prover. Before continuing: give every new rule id plain-English text in src/logic/rules.ts (with an answer sentence if its head is verdict/2); make sure no topic can prove both yes and no; keep lease facts closed-world (absent/1 only when no clause states the fact); and add a row to the matrix in tests/unit/rulebase.test.ts for each new verdict rule. Then run `npm test`."
+      }
+    }
+  ]
+}

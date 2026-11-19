@@ -1,0 +1,193 @@
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { createAdapters, parseBackend } from '../adapters/select';
+import { SAMPLE_LEASES } from '../lease/fixtures';
+import { TOPICS } from '../logic/topics';
+import { citedFactIds } from './segments';
+import { useLeaseLawyer, type LeaseSource } from './useLeaseLawyer';
+import { BookShelf } from './BookShelf';
+import { CaseFiles } from './CaseFiles';
+import { LeasePane } from './LeasePane';
+import { ProofChain } from './ProofChain';
+import { VerdictPanel } from './VerdictPanel';
+import { Workbench } from './Workbench';
+
+const backend = parseBackend(import.meta.env.VITE_AI_BACKEND);
+
+export function App() {
+  const adapters = useMemo(() => createAdapters(backend), []);
+  const { state, loadLease, askQuestion, answerFollowUp } = useLeaseLawyer(adapters);
+  const [draft, setDraft] = useState('');
+  const [sourceId, setSourceId] = useState<string | null>(null);
+  const [focusFact, setFocusFact] = useState<{ id: string; nonce: number } | null>(null);
+  const resultRef = useRef<HTMLElement>(null);
+
+  const pick = (source: LeaseSource) => {
+    setSourceId(source.id);
+    setFocusFact(null);
+    void loadLease(source);
+  };
+
+  useEffect(() => {
+    const first = SAMPLE_LEASES[0]!;
+    pick(first);
+    // Load the first sample once on start.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const cited = useMemo(() => citedFactIds(state.answer?.steps ?? []), [state.answer]);
+  const busy = state.status === 'reading' || state.status === 'thinking';
+  const factCount = state.verification?.facts.length ?? 0;
+
+  const submit = (text: string) => {
+    setDraft(text);
+    setFocusFact(null);
+    void askQuestion(text).then(() => resultRef.current?.focus({ preventScroll: true }));
+  };
+
+  return (
+    <div className="page">
+      <a className="skip" href="#lab">Skip to the question</a>
+      <header className="masthead">
+        <BookShelf />
+        <div className="masthead-inner">
+          <p className="eyebrow">A haunted law library &middot; est. 1972</p>
+          <h1 className="title">
+            Lease <span className="bolt" aria-hidden="true">&#x26A1;</span> Lawyer
+          </h1>
+          <p className="tagline">
+            Ask your lease a plain question. Get an answer you can check, clause by clause: a Prolog engine proves it, step by
+            step, from the words in your lease.
+          </p>
+        </div>
+      </header>
+
+      <main>
+        <section aria-labelledby="cases-heading" className="cases">
+          <h2 id="cases-heading" className="section-title">
+            <span className="numeral">I.</span> Choose a lease
+          </h2>
+          <CaseFiles selected={sourceId} onPick={pick} />
+        </section>
+
+        <div className="workspace">
+          <section className="lease-col" aria-labelledby="lease-heading">
+            <h2 id="lease-heading" className="section-title">
+              <span className="numeral">II.</span> The lease
+              {state.lease && (
+                <span className="section-meta" data-testid="fact-count">
+                  {state.status === 'reading' ? 'reading…' : `${factCount} facts extracted`}
+                </span>
+              )}
+            </h2>
+            {state.lease ? (
+              <LeasePane lease={state.lease} facts={state.verification?.facts ?? []} cited={cited} focus={focusFact} />
+            ) : (
+              <p className="muted">Choose a lease to begin.</p>
+            )}
+          </section>
+
+          <section className="lab-col" id="lab" aria-labelledby="lab-heading">
+            <h2 id="lab-heading" className="section-title">
+              <span className="numeral">III.</span> The laboratory
+            </h2>
+
+            <form
+              className="ask"
+              onSubmit={(e) => {
+                e.preventDefault();
+                submit(draft);
+              }}
+            >
+              <label htmlFor="question" className="ask-label">
+                Your question
+              </label>
+              <div className="ask-row">
+                <textarea
+                  id="question"
+                  data-testid="question"
+                  value={draft}
+                  rows={2}
+                  placeholder="Can my landlord keep my deposit for normal wear and tear?"
+                  onChange={(e) => setDraft(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      submit(draft);
+                    }
+                  }}
+                />
+                <button type="submit" className="lever" data-testid="ask" disabled={busy || !draft.trim() || !state.verification}>
+                  <span className="lever-icon" aria-hidden="true">&#x26A1;</span>
+                  {state.status === 'thinking' ? 'Proving…' : 'Prove it'}
+                </button>
+              </div>
+              <div className="examples" role="group" aria-label="Example questions">
+                {TOPICS.map((t) => (
+                  <button key={t.id} type="button" className="chip" onClick={() => submit(t.examples[0]!)} disabled={busy || !state.verification}>
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+            </form>
+
+            <section ref={resultRef} tabIndex={-1} className="result" aria-live="polite" aria-busy={busy} data-testid="result">
+              {state.error && (
+                <p className="error" role="alert">
+                  Something went wrong: {state.error}
+                </p>
+              )}
+              {state.outOfScope && (
+                <div className="out-of-scope" data-testid="out-of-scope">
+                  <p className="verdict-headline">
+                    That question is outside this rule base, so the engine will not guess. It can prove answers about:
+                  </p>
+                  <ul className="topic-list">
+                    {TOPICS.map((t) => (
+                      <li key={t.id}>
+                        <button type="button" className="linkish" onClick={() => submit(t.examples[0]!)}>
+                          {t.question}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {state.answer && (
+                <>
+                  <VerdictPanel answer={state.answer} question={state.question} onFollowUp={answerFollowUp} tenant={state.tenant} busy={busy} />
+                  {state.answer.steps.length > 0 && (
+                    <ProofChain
+                      key={`${state.answer.query}:${state.answer.proofTerm ?? ''}`}
+                      steps={state.answer.steps}
+                      onShowClause={(factId) => setFocusFact({ id: factId, nonce: Date.now() })}
+                    />
+                  )}
+                </>
+              )}
+              {!state.answer && !state.outOfScope && !state.error && (
+                <p className="muted idle">
+                  Pick an example above or write your own. Every answer is a proof: each step cites a lease clause, a rule of the model
+                  code, or something you told us.
+                </p>
+              )}
+            </section>
+
+            <Workbench verification={state.verification} answer={state.answer} readerName={adapters.reader.name} translatorName={adapters.translator.name} />
+          </section>
+        </div>
+      </main>
+
+      <footer className="footer">
+        <p>
+          <strong>Not legal advice.</strong> Lease Lawyer applies an invented &ldquo;model jurisdiction&rdquo; rule base for teaching and
+          triage. Real landlord-tenant rules vary by state and city; check your local law or a tenant union before you act.
+        </p>
+        <p className="credits">
+          Logic by <a href="http://tau-prolog.org/">Tau Prolog</a> (BSD-3-Clause). Type by IM Fell (OFL), Special Elite (Apache 2.0),
+          Spectral and IBM Plex Mono (OFL). Sample leases, names and addresses are fictional. &copy; 2026 Stubborn Otter Software, MIT
+          License.
+        </p>
+      </footer>
+    </div>
+  );
+}

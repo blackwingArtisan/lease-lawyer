@@ -1,0 +1,29 @@
+# Tasks: Proof-chain answers
+
+- [x] 1. Lease parser with clause offsets and sentence splitting that respects dollar amounts (Req 1.2, 2.6)
+  - [x] 1.1 Unit tests: headings, preamble name, CRLF, duplicate numbers, decimal points
+- [x] 2. Closed fact vocabulary with argument kinds and plain-English descriptions (Req 2.1)
+- [x] 3. Rule-based extractor for all thirteen predicates (Req 2.2)
+  - [x] 3.1 Three fictional sample leases: careful, greedy, thin
+  - [x] 3.2 Unit tests: exact fact list per sample, verbatim quotes, extra phrasings
+- [x] 4. Verifier: vocabulary, types, clause, verbatim quote, dedupe (Req 2.4, 2.5)
+  - [x] 4.1 Unit tests for each rejection reason
+- [x] 5. Prolog meta-interpreter with proof terms, closed-world absence and abduction modes (Req 4.1, 4.2, 6.1)
+- [x] 6. Model-jurisdiction rule base for eight topics with void-waiver rule (Req 4.1)
+  - [x] 6.1 Plain-English rule text and answer sentences, kept in sync by test
+  - [x] 6.2 Verdict matrix, boundary cases and no-conflict sweep (Req 4.4)
+- [x] 7. Tau Prolog session wrapper and browser/Node loader
+- [x] 8. `ask()`: strict proof, conflict, headline, abduction, minimal sets, missing facts (Req 4.3, 4.4, 6.1-6.4)
+  - [x] 8.1 Unit tests for unknown handling
+- [x] 9. Proof tree to numbered steps with citations and uses (Req 5.1-5.3)
+  - [x] 9.1 Unit tests for order, citations, tenant and absent steps
+- [x] 10. Keyword classifier with tenant facts and denials (Req 3.1, 3.2)
+- [x] 11. Adapter ports, local default, remote client, Bedrock server adapter and Pages Functions (Req 2.3, 7.5)
+  - [x] 11.1 Unit tests with stubbed fetch; functions refuse without credentials
+- [x] 12. UI: case files, upload and paste, parchment lease with highlights (Req 1.1-1.4, 2.6, 5.5)
+- [x] 13. UI: question form, topic chips, out-of-scope list (Req 3.3)
+- [x] 14. UI: verdict stamp, follow-up questions, paths (Req 4.3, 6.2, 6.3)
+- [x] 15. UI: electrode proof chain, focus the cited clause (Req 5.1-5.4)
+- [x] 16. UI: workbench with Prolog facts, query and rule book (Req 4.5)
+- [x] 17. Theme, disclaimer, keyboard, reduced motion, phone layout (Req 7.1-7.4)
+- [x] 18. Playwright end-to-end: desktop flows and phone width (Req 1, 3, 5, 6, 7.4)

@@ -1,0 +1,94 @@
+import { expect, test } from '@playwright/test';
+import { fileURLToPath } from 'node:url';
+
+const customLease = fileURLToPath(new URL('./fixtures/maple-terrace.txt', import.meta.url));
+
+test.describe('Lease Lawyer', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByTestId('fact-count')).toContainText('facts extracted');
+  });
+
+  test('picks a lease, asks a question, and shows a proof chain citing the right clause', async ({ page }) => {
+    await page.getByTestId('lease-wychwood-arms').click();
+    await expect(page.getByTestId('fact-count')).toHaveText('10 facts extracted');
+
+    await page.getByTestId('question').fill("Can I break the lease early if I'm transferred?");
+    await page.getByTestId('ask').click();
+
+    const verdict = page.getByTestId('verdict');
+    await expect(verdict).toHaveAttribute('data-verdict', 'yes');
+    await expect(page.getByTestId('headline')).toContainText('job relocation clause');
+
+    const steps = page.getByTestId('proof-step');
+    await expect(steps.last()).toHaveAttribute('data-kind', 'verdict');
+    const leaseStep = steps.filter({ hasText: 'job relocation' }).first();
+    await expect(leaseStep).toContainText('Lease §12');
+    await expect(leaseStep).toContainText('sixty (60) days’ written notice'.replace('’', "'"));
+    await expect(steps.filter({ hasText: 'Your employer is transferring you' })).toHaveCount(1);
+
+    // The cited clause lights up in the lease, and the link jumps to it.
+    const cited = page.getByTestId('cited-span');
+    await expect(cited).toHaveCount(1);
+    await expect(cited).toContainText('Tenant may terminate this Lease early');
+    await leaseStep.getByTestId('show-clause').click();
+    await expect(cited).toBeFocused();
+    await expect(page.locator('#clause-s12 mark.cited')).toBeVisible();
+  });
+
+  test('voids a wear-and-tear clause and cites both the clause and the rule', async ({ page }) => {
+    await page.getByTestId('lease-gaslight-row').click();
+    await expect(page.getByTestId('fact-count')).toHaveText('13 facts extracted');
+    await page.getByTestId('question').fill('Can my landlord keep my deposit for normal wear and tear?');
+    await page.getByTestId('question').press('Enter');
+
+    await expect(page.getByTestId('verdict')).toHaveAttribute('data-verdict', 'no');
+    const chain = page.getByTestId('proof-chain');
+    await expect(chain).toContainText('including charges for normal wear and tear');
+    await expect(chain).toContainText('MJ §1.6');
+    await expect(chain).toContainText('No waiving tenant protections');
+    await expect(page.locator('#clause-s6 mark.cited')).toHaveCount(2);
+  });
+
+  test('says what is missing when it cannot prove either way, then finishes the proof', async ({ page }) => {
+    await page.getByTestId('lease-cobweb-court').click();
+    await expect(page.getByTestId('fact-count')).toHaveText('5 facts extracted');
+    await page.getByTestId('question').fill("Can I break the lease early if I'm transferred?");
+    await page.getByTestId('ask').click();
+
+    await expect(page.getByTestId('verdict')).toHaveAttribute('data-verdict', 'unknown');
+    const followups = page.getByTestId('followups');
+    await expect(followups).toContainText('active-duty military orders');
+    await expect(page.getByTestId('proof-chain')).toHaveCount(0);
+
+    await followups.getByRole('button', { name: 'No' }).click();
+    await expect(page.getByTestId('verdict')).toHaveAttribute('data-verdict', 'no');
+    const chain = page.getByTestId('proof-chain');
+    await expect(chain).toContainText('The lease says nothing about an early termination option');
+    await expect(chain).toContainText('You are not on military orders');
+    await expect(chain).toContainText('MJ §6.4');
+  });
+
+  test('refuses to guess on a question outside the rule base', async ({ page }) => {
+    await page.getByTestId('question').fill('Who won the 1927 World Series?');
+    await page.getByTestId('ask').click();
+    await expect(page.getByTestId('out-of-scope')).toContainText('outside this rule base');
+  });
+
+  test('reads an uploaded lease and cites its clauses', async ({ page }) => {
+    await page.getByTestId('upload').setInputFiles(customLease);
+    await expect(page.getByTestId('lease')).toContainText('Maple Terrace');
+    await expect(page.getByTestId('fact-count')).toContainText('facts extracted');
+    await page.getByRole('button', { name: 'Late fees', exact: true }).click();
+    await expect(page.getByTestId('verdict')).toHaveAttribute('data-verdict', 'no');
+    await expect(page.getByTestId('proof-chain')).toContainText('Late fee over the cap');
+    await expect(page.getByTestId('cited-span').filter({ hasText: 'late fee of $95.00' })).toHaveCount(1);
+  });
+
+  test('shows the generated Prolog facts and the rule base', async ({ page }) => {
+    await page.getByTestId('lease-wychwood-arms').click();
+    await expect(page.getByTestId('prolog-facts')).toContainText('lease_fact(early_termination_option(job_relocation, 60, 1), f10).');
+    await page.getByRole('tab', { name: 'Rule book' }).click();
+    await expect(page.getByTestId('rulebase')).toContainText('rule(mj_3_4, wear_not_deductible, true).');
+  });
+});
