@@ -1,5 +1,7 @@
 # Lease Lawyer
 
+[![CI](https://github.com/blackwingArtisan/lease-lawyer/actions/workflows/ci.yml/badge.svg)](https://github.com/blackwingArtisan/lease-lawyer/actions/workflows/ci.yml)
+
 **Chatbots guess about your lease. Lease Lawyer proves it, or says it can't tell.**
 
 Ask a plain question ("Can my landlord keep my deposit for normal wear and tear?") and get Yes, No, or Can't tell. A Yes or No comes with a proof you can check: a 1970s logic engine works it out step by step, and every step quotes the exact clause it rests on. When the lease points somewhere the reader cannot follow, the answer is "Can't tell", with the section to read yourself.
@@ -71,7 +73,7 @@ Kiro's spec-driven workflow shaped the project; [KIRO-LOG.md](KIRO-LOG.md) recor
 - **Spec** (`.kiro/specs/proof-chain-answers/`): requirements in EARS form, the design, and a task list in which every task names its requirements and is checked only when code and a test exist.
 - **Hooks** (`.kiro/hooks/`): run the unit tests when source or Prolog files are saved, guard the rule base and rule text, guard the extractor and coverage check, and type-check when the agent stops. The two guards also ship as Kiro IDE `.kiro.hook` files with the same prompt; a unit test keeps each pair in step and checks that every matcher fires on both repo-relative and absolute paths.
 - **MCP** (`.kiro/settings/mcp.json`): the project's own prover as an MCP server (`tools/mcp-prover/`, tools `list_rules`, `read_lease`, `ask_topic` and `explain_proof`), so an agent editing `rulebase.pl` can prove a topic against a real lease before it saves; plus Context7 for library docs and the AWS Documentation server for Bedrock. The prover server is covered by unit tests over the MCP protocol.
-- **The Kiro pass** reviewed the spec against the code, tightened it into EARS, and built the wider reader, the coverage check and the "Can't tell" answer; unit tests went from 92 to 198 across that pass and its follow-up. Most of the rest was built outside Kiro; the log maps every commit to who built it. Today: 241 unit and 26 end-to-end tests.
+- **The Kiro pass** reviewed the spec against the code, tightened it into EARS, and built the wider reader, the coverage check and the "Can't tell" answer; unit tests went from 92 to 198 across that pass and its follow-up. Most of the rest was built outside Kiro; the log maps every commit to who built it. Today: 245 unit and 26 end-to-end tests, run by CI on every push.
 
 ## How it works
 
@@ -135,7 +137,10 @@ npm run typecheck
 npm test                              # Vitest unit tests
 npx playwright install chromium       # first time only
 npm run test:e2e                      # Playwright against the production build, port 3162 (set PW_PORT to change it)
+npm run eval                          # score the reader on the unseen leases in tests/holdout/
 ```
+
+`.github/workflows/ci.yml` runs all four on every push and pull request. A unit test keeps each Kiro spec's task list honest: every requirement a task cites must exist, and no task is checked while a sub-task is open.
 
 The unit tests cover the parser; the extractor on each sample lease, on two invented leases and on a table of one-sentence wordings; the coverage check, including "non-refundable", "at any time", rider and schedule references; PDF text reflow, and the sample PDF reading to the same facts as its text; every verifier rejection; Prolog injection safety; the question classifier; a 33-case verdict matrix across leases and topics; boundary cases; a sweep proving no topic ever proves both Yes and No; rule text kept in sync with the Prolog rule base; proof step order and citations; unknown handling; and the adapters with `fetch` stubbed.
 

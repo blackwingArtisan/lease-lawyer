@@ -5,6 +5,8 @@ Notable changes to Lease Lawyer. The Kiro sessions and what they changed are rec
 ## Unreleased
 
 ### Added
+- Continuous integration (`.github/workflows/ci.yml`): type check, unit tests, the holdout eval and the Playwright suite on every push and pull request, with a README badge.
+- A unit test for every Kiro spec's `tasks.md`: each cited requirement exists, and no task is checked while one of its sub-tasks is open.
 - `npm run eval`: scores the reader and prover on the two unseen leases in `tests/holdout/` against an answer key, beside the first version rebuilt from git history, and prints facts read, facts kept that the lease does not state, Yes or No answers resting on a false "silent", and "Can't tell" answers. A unit test pins today's numbers.
 - Cloudflare Pages deploy settings (`wrangler.toml`) and `public/_headers` for asset caching and security headers; the README's Deploy section has the two commands.
 - An MCP server for the prover (`tools/mcp-prover/`, `npm run mcp:prover`) with `list_rules`, `read_lease`, `ask_topic` and `explain_proof`, and a Kiro MCP config that registers it alongside Context7 and the AWS Documentation server.
