@@ -5,6 +5,9 @@ Notable changes to Lease Lawyer. The Kiro sessions and what they changed are rec
 ## Unreleased
 
 ### Added
+- The seam: every answer shows how it was made, sewn together in one strip. Reader (which reader, how many facts it proposed), Verifier (how many it kept word for word, how many it struck from the record, how many clauses were unreadable), Prolog (what it proved, in how many cited steps).
+- A bigger rubber stamp and one flash of lightning when a Yes or No lands. Both replay on every new answer and stay still under reduced motion.
+- Mild fog drifting across the bottom of the library and a candlelit vignette, static under reduced motion.
 - A fourth sample, Hollowmere Flats, the "try to make it lie" lease: its pets clause points to a rider, its deposit deductions to an exhibit, it lets the landlord enter "at any time", and it states the subletting rule as a double negative. Lease Lawyer answers "Can't tell" on pets, deposit deductions and entry, and reads the double negative correctly as "written consent required".
 - "Can't tell" has its own stamp: amber, dashed, with a question mark, shown when the reader could not read a clause the answer depends on. "Unproven" stays for answers that are open for other reasons.
 - Unreadable clauses are outlined in amber in the lease, with a typed note naming what the reader could not read. The clause an answer is blocked on is marked more strongly and scrolled into view inside the lease.

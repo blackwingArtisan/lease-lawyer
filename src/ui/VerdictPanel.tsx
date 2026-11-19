@@ -22,6 +22,8 @@ export function VerdictPanel({ answer, question, tenant, busy, onFollowUp, onSho
   // "Can't tell" is its own outcome: the lease does speak to the question, but the reader could not read it.
   const cantTell = answer.verdict === 'unknown' && answer.unread.length > 0;
   const label = cantTell ? CANT_TELL : STAMP[answer.verdict];
+  // A new key per answer replays the stamp and the flash without remounting the follow-up buttons.
+  const landing = `${answer.query}:${answer.proofTerm ?? ''}:${answer.verdict}`;
   return (
     <div
       className={`verdict verdict-${answer.verdict}${cantTell ? ' verdict-cant-tell' : ''}`}
@@ -34,7 +36,8 @@ export function VerdictPanel({ answer, question, tenant, busy, onFollowUp, onSho
         <span className="asked-topic">Proved as: {answer.question}</span>
       </p>
       <div className="verdict-row">
-        <p className="stamp" data-testid="stamp" aria-label={`Verdict: ${label}`}>
+        {answer.verdict !== 'unknown' && <span key={`flash-${landing}`} className="lightning" aria-hidden="true" />}
+        <p key={landing} className="stamp" data-testid="stamp" aria-label={`Verdict: ${label}`}>
           {cantTell && (
             <span className="stamp-mark" aria-hidden="true">
               ?

@@ -8,6 +8,7 @@ import { BookShelf } from './BookShelf';
 import { CaseFiles } from './CaseFiles';
 import { LeasePane } from './LeasePane';
 import { ProofChain } from './ProofChain';
+import { Seam } from './Seam';
 import { VerdictPanel } from './VerdictPanel';
 import { Workbench } from './Workbench';
 
@@ -64,6 +65,7 @@ export function App() {
 
   return (
     <div className="page">
+      <div className="fog" aria-hidden="true" />
       <a className="skip" href="#lab">Skip to the question</a>
       <header className="masthead">
         <BookShelf />
@@ -187,6 +189,7 @@ export function App() {
                     tenant={state.tenant}
                     busy={busy}
                   />
+                  {state.verification && <Seam readerName={adapters.reader.name} verification={state.verification} answer={state.answer} />}
                   {state.answer.steps.length > 0 && (
                     <ProofChain
                       key={`${state.answer.query}:${state.answer.proofTerm ?? ''}`}

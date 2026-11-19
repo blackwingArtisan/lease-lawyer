@@ -91,9 +91,34 @@ a {
 }
 
 .page {
+  position: relative;
   max-width: 1360px;
   margin: 0 auto;
   padding: 0 24px 48px;
+}
+
+.page > :not(.fog, .skip) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Mild fog drifting low across the library, and a candlelit vignette. Static under reduced motion. */
+.fog {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 18% at 20% 92%, rgb(196 181 156 / 0.07), transparent 70%),
+    radial-gradient(50% 14% at 75% 96%, rgb(196 181 156 / 0.06), transparent 70%),
+    radial-gradient(40% 12% at 50% 88%, rgb(166 255 110 / 0.025), transparent 70%),
+    radial-gradient(120% 90% at 50% 40%, transparent 60%, rgb(0 0 0 / 0.45));
+  background-size:
+    200% 100%,
+    200% 100%,
+    200% 100%,
+    100% 100%;
+  animation: fog-drift 60s linear infinite alternate;
 }
 
 /* ---------- Masthead ---------- */
@@ -660,6 +685,65 @@ mark.fact.flash {
 }
 .verdict-cant-tell .stamp {
   border-style: dashed;
+  font-size: 2.4rem;
+}
+
+/* One flash of lightning across the room when a Yes or No lands. */
+.lightning {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(70% 60% at 60% 20%, rgb(230 255 210 / 0.55), transparent 70%),
+    linear-gradient(180deg, rgb(200 255 170 / 0.18), transparent);
+  animation: lightning 0.7s ease-out both;
+  animation-delay: calc(var(--steps, 0) * var(--step-delay));
+}
+
+/* The seam: reader, verifier and Prolog, sewn together. */
+.seam {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.82rem;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+}
+
+.seam-part {
+  position: relative;
+  display: grid;
+  gap: 1px;
+  padding: 10px 14px;
+}
+
+.seam-part + .seam-part {
+  /* A running stitch with cross-stitches along the join. */
+  background:
+    repeating-linear-gradient(180deg, var(--brass-dim) 0 6px, transparent 6px 12px) left / 2px 100% no-repeat,
+    repeating-linear-gradient(180deg, transparent 0 4px, rgb(212 173 87 / 0.55) 4px 6px, transparent 6px 12px) left 1px / 10px 100% no-repeat;
+  padding-left: 22px;
+}
+
+.seam-label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brass);
+}
+
+.seam-value {
+  color: var(--bone);
+}
+
+.seam-note {
+  color: var(--fog-dim);
 }
 
 .stamp-mark {
@@ -701,9 +785,9 @@ mark.fact.flash {
 .stamp {
   flex: none;
   margin: 0;
-  padding: 6px 16px 2px;
+  padding: 8px 20px 2px;
   font-family: var(--display);
-  font-size: 2.2rem;
+  font-size: 3.4rem;
   line-height: 1;
   color: var(--tone);
   border: 3px double var(--tone);
@@ -1096,6 +1180,41 @@ mark.fact.flash {
   }
 }
 
+@keyframes lightning {
+  0% {
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  16% {
+    opacity: 0.15;
+  }
+  24% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fog-drift {
+  from {
+    background-position:
+      0% 0,
+      100% 0,
+      30% 0,
+      0 0;
+  }
+  to {
+    background-position:
+      100% 0,
+      0% 0,
+      70% 0,
+      0 0;
+  }
+}
+
 @keyframes clause-flash {
   0%,
   30% {
@@ -1171,6 +1290,16 @@ mark.fact.flash {
   .verdict-row {
     flex-direction: column;
     align-items: flex-start;
+  }
+  .stamp {
+    font-size: 2.6rem;
+  }
+  .seam {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .seam-part + .seam-part {
+    padding-left: 14px;
+    background: repeating-linear-gradient(90deg, var(--brass-dim) 0 6px, transparent 6px 12px) top / 100% 2px no-repeat;
   }
   .followup legend {
     max-width: 100%;

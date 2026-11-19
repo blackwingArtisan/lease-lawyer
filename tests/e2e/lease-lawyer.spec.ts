@@ -43,6 +43,12 @@ test.describe('Lease Lawyer', () => {
     await page.getByTestId('question').press('Enter');
 
     await expect(page.getByTestId('verdict')).toHaveAttribute('data-verdict', 'no');
+    const seam = page.getByTestId('seam');
+    await expect(seam).toContainText('Rule-based reader (local)');
+    await expect(seam).toContainText('13 kept word for word');
+    await expect(seam).toContainText('0 struck from the record');
+    await expect(seam).toContainText('Proved No');
+    await expect(seam).toContainText('6 cited steps');
     const chain = page.getByTestId('proof-chain');
     await expect(chain).toContainText('including charges for normal wear and tear');
     await expect(chain).toContainText('MJ §1.6');
@@ -170,5 +176,16 @@ test.describe('Lease Lawyer', () => {
     await expect(page.getByTestId('headline')).toContainText('Section 5 (ANIMALS) mentions pets');
     await expect(page.locator('#clause-s5')).toHaveClass(/is-blocking/);
     await expect(page.locator('#clause-s5')).toBeInViewport();
+  });
+
+  test('stamps each new answer afresh', async ({ page }) => {
+    await page.getByTestId('lease-gaslight-row').click();
+    await page.getByRole('button', { name: 'Deposit and wear and tear', exact: true }).click();
+    await expect(page.getByTestId('stamp')).toHaveText('No');
+    const first = await page.getByTestId('stamp').elementHandle();
+    await page.getByRole('button', { name: 'Pets and assistance animals', exact: true }).click();
+    await expect(page.getByTestId('stamp')).toHaveText('Yes');
+    // A new element, so the stamp animation and the lightning play again.
+    expect(await page.getByTestId('stamp').evaluate((el, old) => el !== old, first)).toBe(true);
   });
 });
