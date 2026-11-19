@@ -31,6 +31,15 @@ describe('classifyQuestion', () => {
     expect(t).toContainEqual({ name: 'military_orders', value: false, source: 'question' });
   });
 
+  it('routes small pets and the plain "deposit back" question', () => {
+    for (const q of ['Can I keep a goldfish?', 'Can I have a hamster?', 'Are fish allowed?', 'Can I get a pet snake?']) {
+      expect(classifyQuestion(q).topic, q).toBe('pets');
+    }
+    for (const q of ['Can I get my deposit back?', 'How do I get my deposit back?', 'Will I see my deposit back after I move out?']) {
+      expect(classifyQuestion(q).topic, q).toBe('wear_and_tear');
+    }
+  });
+
   it('returns no topic for questions outside the rule base', () => {
     expect(classifyQuestion('Who won the 1927 World Series?').topic).toBeNull();
     expect(classifyQuestion('').topic).toBeNull();

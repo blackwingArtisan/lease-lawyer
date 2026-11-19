@@ -62,3 +62,5 @@ A task is checked only when the code and a test that exercises it both exist. Pl
   - [x] 23.2 Unit test: the Bedrock reader prompt tells the model not to guess
 - [ ] 24. Name the unread section when an answer reports a missing lease fact for a predicate that is unread (Req 8.19). Today the "lease is missing a fact" answer does not mention it.
 - [ ] 25. Unit test that the local reader makes no network call, by stubbing `fetch` to throw (Req 2.7, 7.9)
+- [x] 26. Route small-pet and "deposit back" questions, and flag "non-refundable" deposit and "at any time" or "without notice" entry clauses as unread (Req 3.1, 8.1, 8.2)
+  - [x] 26.1 Unit tests: classifier wordings; coverage cue wordings; `ask()` answers "Can't tell" for both clause kinds

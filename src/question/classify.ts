@@ -16,6 +16,7 @@ const TOPIC_PATTERNS: Record<string, Pattern[]> = {
     [/\bdeposit\b/i, 2],
     [/\b(?:repaint|carpet|scuff|nail holes?|cleaning fee)/i, 2],
     [/\b(?:keep|deduct|withhold|take)\b[^?]*\bdeposit/i, 2],
+    [/\b(?:get|getting|receive|see)\b[^?]*\bdeposit\b[^?]*\bback\b|\bdeposit back\b|\breturn (?:of )?(?:my|the|our) deposit\b/i, 3],
   ],
   early_termination: [
     [/break (?:my|the|our) lease/i, 5],
@@ -24,7 +25,7 @@ const TOPIC_PATTERNS: Record<string, Pattern[]> = {
     [/\b(?:transferr?ed|relocat\w*|deploy\w*|military orders)\b/i, 2],
   ],
   pets: [
-    [/\b(?:pets?|dogs?|cats?|puppy|kitten|animals?|ferret|bird|rabbit)\b/i, 4],
+    [/\b(?:pets?|dogs?|cats?|puppy|kitten|animals?|ferrets?|birds?|rabbits?|parrots?|(?:gold)?fish|hamsters?|gerbils?|guinea pigs?|snakes?|lizards?|turtles?|reptiles?)\b/i, 4],
     [/\b(?:emotional support|service animal|assistance animal|esa)\b/i, 3],
   ],
   entry_without_notice: [

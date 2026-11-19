@@ -57,7 +57,8 @@ export const CUES: readonly CueSpec[] = [
   {
     predicate: 'deposit_deduction',
     subject: 'what may be deducted from the deposit',
-    cue: /\b(?:deduct\w*|withh[eo]ld\w*|forfeit\w*|retain\w*)\b|wear (?:and|&) tear/i,
+    // "Non-refundable" and "forfeit" say what happens to the deposit, so a clause with them is never silent.
+    cue: /\b(?:deduct\w*|withh[eo]ld\w*|forfeit\w*|retain\w*)\b|wear (?:and|&) tear|\bnon-?refundable\b|\bnot\s+(?:be\s+)?refund(?:able|ed)\b/i,
     needs: /\bdeposit\b|\bsecurity\b/i,
     strip: PET_DEPOSIT,
   },
@@ -88,7 +89,11 @@ export const CUES: readonly CueSpec[] = [
     subject: 'landlord entry',
     cue: /\b(?:enter(?:s|ing)?|entry|access(?:ing)?|inspect\w*)\b/i,
     // A clause that names no time at all ("reasonable notice") gives nothing to read.
-    needs: new RegExp(String.raw`\d|\b(?:${NUMBER_WORDS}|hours?|days?|overnight|week)\b`, 'i'),
+    // "At any time" and "without notice" name a time too: none at all.
+    needs: new RegExp(
+      String.raw`\d|\b(?:${NUMBER_WORDS}|hours?|days?|overnight|week)\b|\bat\s+any\s+(?:time|hour)\b|\banytime\b|\bwhenever\b|\bwithout\s+(?:any\s+|prior\s+|advance\s+)?(?:notice|warning)\b`,
+      'i',
+    ),
   },
   {
     predicate: 'late_fee',

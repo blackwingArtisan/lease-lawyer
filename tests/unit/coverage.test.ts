@@ -203,3 +203,47 @@ describe('late-fee clauses that name a day but no grace fact', () => {
     expect(verifyFacts(lease, []).unread.map((u) => u.predicate)).toContain('deposit_deduction');
   });
 });
+
+describe('clauses that look silent but are not', () => {
+  const readLease = (text: string) => {
+    const lease = parseLease('t', text);
+    return verifyFacts(lease, extractFacts(lease));
+  };
+
+  it.each([
+    'The deposit is non-refundable.',
+    'The deposit is nonrefundable under all circumstances.',
+    'The deposit will not be refunded at the end of the term.',
+    'Tenant forfeits the deposit upon move-out.',
+    'Landlord may retain the deposit in full.',
+  ])('flags what may be deducted from the deposit: %s', (sentence) => {
+    expect(unread(`6. SECURITY DEPOSIT. Tenant shall pay a security deposit of $1,200. ${sentence}`)).toContain('deposit_deduction@s6');
+  });
+
+  it('does not flag a non-refundable pet fee in a deposit-free clause', () => {
+    expect(unread('7. PET FEE. A one-time pet fee of $250 is non-refundable.')).not.toContain('deposit_deduction@s7');
+  });
+
+  it.each([
+    'Landlord may enter the Premises at any time.',
+    'Landlord may enter the Premises without notice.',
+    'Owner may access the unit at any hour and without prior notice.',
+    'Management may inspect the unit whenever it chooses.',
+  ])('flags landlord entry: %s', (sentence) => {
+    expect(unread(`8. ACCESS. ${sentence}`)).toContain('entry_notice_hours@s8');
+  });
+
+  it('answers "can\'t tell" about the deposit for a non-refundable clause, not the silent-lease answer', async () => {
+    const r = readLease('6. SECURITY DEPOSIT. Tenant shall pay a security deposit of $1,200. The deposit is non-refundable.');
+    const a = await ask({ topic: 'wear_and_tear', facts: r.facts, tenant: [], unread: r.unread });
+    expect(a.verdict).toBe('unknown');
+    expect(a.headline).toMatch(/^Can't tell\. Section 6 \(SECURITY DEPOSIT\) mentions what may be deducted from the deposit,/);
+  });
+
+  it('answers "can\'t tell" about entry for an "at any time" clause', async () => {
+    const r = readLease('8. ACCESS. Landlord may enter the Premises at any time and without notice.');
+    const a = await ask({ topic: 'entry_without_notice', facts: r.facts, tenant: [], unread: r.unread });
+    expect(a.verdict).toBe('unknown');
+    expect(a.headline).toMatch(/^Can't tell\. Section 8 \(ACCESS\) mentions landlord entry,/);
+  });
+});
