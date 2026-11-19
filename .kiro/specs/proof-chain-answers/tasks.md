@@ -1,6 +1,6 @@
 # Tasks: Proof-chain answers
 
-A task is checked only when the code and a test that exercises it both exist. Playwright tests count once they are written; they are run by the operator.
+A task is checked only when the code and a test that exercises it both exist. Playwright tests count once they are written and pass with `npm run test:e2e`.
 
 - [x] 1. Lease parser with clause offsets and sentence splitting that respects dollar amounts (Req 1.2, 2.6)
   - [x] 1.1 Unit tests: headings, preamble name, CRLF, duplicate numbers, decimal points
