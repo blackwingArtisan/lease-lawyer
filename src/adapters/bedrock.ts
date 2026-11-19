@@ -19,6 +19,12 @@ export interface BedrockConfig {
   model?: string;
 }
 
+/**
+ * Bedrock model IDs are the Anthropic model ID with an `anthropic.` prefix, and
+ * `AnthropicBedrockMantle` is the SDK's client for Bedrock's Messages API endpoint
+ * (`bedrock-mantle.{region}.api.aws/anthropic`, SigV4-signed). Model access is
+ * enabled per AWS account and region, so set `BEDROCK_MODEL_ID` to override.
+ */
 export const DEFAULT_BEDROCK_MODEL = 'anthropic.claude-opus-5-5';
 
 function client(config: BedrockConfig) {
