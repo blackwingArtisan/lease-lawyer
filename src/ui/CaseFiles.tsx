@@ -65,6 +65,7 @@ export function CaseFiles({ selected, onPick }: Props) {
               type="file"
               accept=".txt,text/plain"
               className="visually-hidden"
+              tabIndex={-1}
               data-testid="upload"
               aria-label="Upload a lease as a text file"
               onChange={(e) => {

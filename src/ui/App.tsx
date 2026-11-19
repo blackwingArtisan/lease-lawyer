@@ -35,6 +35,7 @@ export function App() {
   }, []);
 
   const cited = useMemo(() => citedFactIds(state.answer?.steps ?? []), [state.answer]);
+  const blocking = useMemo(() => new Set((state.answer?.unread ?? []).map((u) => u.clauseId)), [state.answer]);
   const busy = state.status === 'reading' || state.status === 'thinking';
   const factCount = state.verification?.facts.length ?? 0;
 
@@ -97,7 +98,14 @@ export function App() {
               )}
             </h2>
             {state.lease ? (
-              <LeasePane lease={state.lease} facts={state.verification?.facts ?? []} cited={cited} focus={focusFact} />
+              <LeasePane
+                lease={state.lease}
+                facts={state.verification?.facts ?? []}
+                cited={cited}
+                unread={state.verification?.unread ?? []}
+                blocking={blocking}
+                focus={focusFact}
+              />
             ) : (
               <p className="muted">Choose a lease to begin.</p>
             )}
@@ -189,10 +197,21 @@ export function App() {
                 </>
               )}
               {!state.answer && !state.outOfScope && !state.error && (
-                <p className="muted idle">
-                  Pick an example above or write your own. Every answer is a proof: each step cites a lease clause, a rule of the model
-                  code, or something you told us.
-                </p>
+                <div className="idle" data-testid="idle">
+                  <ol className="ghost-chain" aria-hidden="true">
+                    <li />
+                    <li />
+                    <li />
+                    <li />
+                  </ol>
+                  <div>
+                    <p className="idle-title">Ask, and the circuit will charge.</p>
+                    <p className="muted">
+                      Tap a topic above or write your own question. Every answer is a proof: each step cites a lease clause, a rule of the
+                      model code, or something you told us. When the lease cannot be read, the answer is &ldquo;Can&rsquo;t tell&rdquo;.
+                    </p>
+                  </div>
+                </div>
               )}
             </section>
 

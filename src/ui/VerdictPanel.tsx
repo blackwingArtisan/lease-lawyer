@@ -12,21 +12,35 @@ interface Props {
 }
 
 const STAMP = { yes: 'Yes', no: 'No', unknown: 'Unproven' } as const;
+const CANT_TELL = "Can't tell";
 
 /** The verdict stamp, the one-line answer, and, when the proof is open, what it still needs. */
 export function VerdictPanel({ answer, question, tenant, busy, onFollowUp, onShowClause }: Props) {
   const answered = new Map(tenant.map((t) => [t.name, t.value]));
   const tenantMissing = answer.missing.filter((m) => m.kind === 'tenant');
   const leaseMissing = answer.missing.filter((m) => m.kind === 'lease');
+  // "Can't tell" is its own outcome: the lease does speak to the question, but the reader could not read it.
+  const cantTell = answer.verdict === 'unknown' && answer.unread.length > 0;
+  const label = cantTell ? CANT_TELL : STAMP[answer.verdict];
   return (
-    <div className={`verdict verdict-${answer.verdict}`} data-testid="verdict" data-verdict={answer.verdict} style={{ ['--steps' as string]: answer.steps.length }}>
+    <div
+      className={`verdict verdict-${answer.verdict}${cantTell ? ' verdict-cant-tell' : ''}`}
+      data-testid="verdict"
+      data-verdict={answer.verdict}
+      style={{ ['--steps' as string]: answer.steps.length }}
+    >
       <p className="asked">
         <span className="asked-label">You asked</span> {question}
         <span className="asked-topic">Proved as: {answer.question}</span>
       </p>
       <div className="verdict-row">
-        <p className="stamp" aria-label={`Verdict: ${STAMP[answer.verdict]}`}>
-          {STAMP[answer.verdict]}
+        <p className="stamp" data-testid="stamp" aria-label={`Verdict: ${label}`}>
+          {cantTell && (
+            <span className="stamp-mark" aria-hidden="true">
+              ?
+            </span>
+          )}
+          {label}
         </p>
         <p className="verdict-headline" data-testid="headline">
           {answer.headline}

@@ -114,7 +114,15 @@ test.describe('Lease Lawyer', () => {
     await page.getByTestId('ask').click();
 
     await expect(page.getByTestId('verdict')).toHaveAttribute('data-verdict', 'unknown');
+    await expect(page.getByTestId('stamp')).toHaveText("?Can't tell");
     await expect(page.getByTestId('headline')).toContainText("Can't tell. Section 3 (ANIMALS) mentions pets");
+
+    // The unreadable clause is outlined in the lease and says why.
+    await expect(page.locator('#clause-s3')).toHaveClass(/clause-unread/);
+    await expect(page.locator('#clause-s3')).toHaveClass(/is-blocking/);
+    await expect(page.locator('#clause-s3').getByTestId('unread-tag')).toHaveText(
+      'Unreadable: pets. The engine will not treat the lease as silent here.',
+    );
     await expect(page.getByTestId('result')).not.toContainText('says nothing about pets');
 
     await expect(page.getByTestId('prolog-facts')).toContainText('unread(pet_policy, s3).');
@@ -122,5 +130,35 @@ test.describe('Lease Lawyer', () => {
     // The unread section is listed and the button moves focus to the clause.
     await page.getByTestId('show-unread').click();
     await expect(page.locator('#clause-s3')).toBeFocused();
+  });
+
+  test('shows an unlit proof chain before the first question, and "Unproven" when nothing was unreadable', async ({ page }) => {
+    await expect(page.getByTestId('idle')).toContainText('Ask, and the circuit will charge.');
+    await page.getByTestId('lease-cobweb-court').click();
+    await page.getByRole('button', { name: 'Leaving early', exact: true }).click();
+    await expect(page.getByTestId('verdict')).toHaveAttribute('data-verdict', 'unknown');
+    await expect(page.getByTestId('stamp')).toHaveText('Unproven');
+    await expect(page.getByTestId('idle')).toHaveCount(0);
+  });
+
+  test('keeps the hidden file input out of the tab order and resets the lease scroll on a new lease', async ({ page }) => {
+    await expect(page.getByTestId('upload')).toHaveAttribute('tabindex', '-1');
+    const parchment = page.getByTestId('lease');
+    await parchment.evaluate((el) => el.scrollTo({ top: el.scrollHeight }));
+    await expect.poll(() => parchment.evaluate((el) => el.scrollTop)).toBeGreaterThan(0);
+    await page.getByTestId('lease-gaslight-row').click();
+    await expect(page.getByTestId('fact-count')).toHaveText('13 facts extracted');
+    await expect.poll(() => parchment.evaluate((el) => el.scrollTop)).toBe(0);
+  });
+
+  test('keeps the "Your own" card readable once an uploaded lease is selected', async ({ page }) => {
+    await page.getByTestId('upload').setInputFiles(customLease);
+    await expect(page.getByTestId('lease')).toContainText('Maple Terrace');
+    const card = page.locator('.case-own');
+    await expect(card).toHaveClass(/is-on/);
+    // The card stays dark with light text, as it is when not selected.
+    const bg = await card.evaluate((el) => getComputedStyle(el).backgroundImage);
+    expect(bg).toContain('repeating-linear-gradient');
+    await expect(card.locator('.case-name')).toHaveCSS('color', 'rgb(241, 230, 207)');
   });
 });

@@ -274,6 +274,14 @@ button.case:hover {
   cursor: default;
 }
 
+.case-own.is-on {
+  /* Keep the dark card when selected; the parchment background of .case.is-on made its light text unreadable. */
+  background: repeating-linear-gradient(135deg, #2f2219 0 10px, #281c14 10px 20px);
+  color: var(--bone);
+  border-style: solid;
+  border-color: var(--volt-deep);
+}
+
 .case-own .case-tab {
   background: var(--brass-dim);
   color: var(--ink);
@@ -397,6 +405,33 @@ mark.fact.flash {
 
 .clause.flash {
   animation: clause-flash 1.6s ease-out;
+}
+
+/* A clause the reader could not read: amber dashed outline and a typed margin note. */
+.clause-unread {
+  position: relative;
+  padding: 6px 8px;
+  margin-left: -8px;
+  margin-right: -8px;
+  outline: 2px dashed #b87a12;
+  outline-offset: 0;
+  border-radius: 3px;
+  background: rgb(255 193 90 / 0.12);
+}
+
+.clause-unread.is-blocking {
+  outline-width: 3px;
+  background: rgb(255 193 90 / 0.24);
+}
+
+.unread-tag {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  color: #7a4a00;
 }
 
 /* ---------- Ask ---------- */
@@ -540,9 +575,56 @@ mark.fact.flash {
 }
 
 .idle {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
   padding: 18px;
-  border: 1px dashed var(--rule);
+  border: 1px solid var(--rule);
   border-radius: 10px;
+  background: linear-gradient(180deg, rgb(43 31 23 / 0.6), rgb(34 24 18 / 0.6));
+}
+
+.idle p {
+  margin: 0;
+}
+
+.idle-title {
+  margin-bottom: 4px !important;
+  font-family: var(--display-italic);
+  font-style: italic;
+  font-size: 1.2rem;
+  color: var(--bone);
+}
+
+/* An unlit proof chain: dull electrodes on a dead copper wire. */
+.ghost-chain {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ghost-chain::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 17px;
+  border-left: 3px dashed #5a3d22;
+}
+
+.ghost-chain li {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  margin-left: 7px;
+  background: radial-gradient(circle at 35% 30%, #7a6a4a, #4a3a20 60%, #2a1f12);
+  border: 2px solid #3b2a14;
+  border-radius: 50%;
+  opacity: 0.75;
 }
 
 .error {
@@ -575,6 +657,15 @@ mark.fact.flash {
 }
 .verdict-unknown {
   --tone: var(--amber);
+}
+.verdict-cant-tell .stamp {
+  border-style: dashed;
+}
+
+.stamp-mark {
+  display: inline-block;
+  margin-right: 0.18em;
+  font-family: var(--display-italic);
 }
 
 .asked {
