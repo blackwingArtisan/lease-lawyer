@@ -29,7 +29,7 @@ A chatbot answers every question, fluently, whether or not the lease supports th
 Lease Lawyer splits the job. A reader (a local rule-based reader, or Claude on Amazon Bedrock) only turns clauses into typed facts, each with the exact sentence it came from. A verifier throws out any fact whose quote is not word for word in the clause it cites. A coverage check marks clauses that mention a topic but yielded no fact. Then Prolog, not the model, decides, and it can only say Yes or No when it has a proof. Everything else is "Can't tell" or a follow-up question.
 
 ## What it does
-- **Five case files.** Four invented sample leases (careful, greedy, thin, and the trick lease) plus your own, uploaded as text or pasted.
+- **Five case files.** Four invented sample leases (careful, greedy, thin, and the trick lease) plus your own: upload a PDF or a text file, or paste the text. PDFs are read in your browser with pdf.js and never leave it; a sample lease PDF is one click away.
 - **Proof chains you can click.** Each step is numbered, says which earlier steps it uses, and cites a lease section with the quote, a model-code section, an arithmetic check, or your own answer. A sewn thread joins each Lease step to its quote in the lease.
 - **The seam on every answer.** One strip shows what the reader proposed, what the verifier kept and struck from the record, and what Prolog proved.
 - **"Can't tell" instead of a wrong "silent".** An amber stamp, the unreadable clause outlined in the lease, and a button that jumps to it.
@@ -119,9 +119,9 @@ npx playwright install chromium       # first time only
 npm run test:e2e                      # Playwright against the production build, port 3162 (set PW_PORT to change it)
 ```
 
-The unit tests cover the parser; the extractor on each sample lease, on two invented leases and on a table of one-sentence wordings; the coverage check, including "non-refundable", "at any time" and rider references; every verifier rejection; Prolog injection safety; the question classifier; a 33-case verdict matrix across leases and topics; boundary cases; a sweep proving no topic ever proves both Yes and No; rule text kept in sync with the Prolog rule base; proof step order and citations; unknown handling; and the adapters with `fetch` stubbed.
+The unit tests cover the parser; the extractor on each sample lease, on two invented leases and on a table of one-sentence wordings; the coverage check, including "non-refundable", "at any time", rider and schedule references; PDF text reflow, and the sample PDF reading to the same facts as its text; every verifier rejection; Prolog injection safety; the question classifier; a 33-case verdict matrix across leases and topics; boundary cases; a sweep proving no topic ever proves both Yes and No; rule text kept in sync with the Prolog rule base; proof step order and citations; unknown handling; and the adapters with `fetch` stubbed.
 
-The end-to-end tests pick, upload or paste a lease, ask questions, and check the proof chain and its citations; the "Can't tell" stamp and the outlined clause; that the verdict lands in view at 1280x720 and 1440x900; the seam, the suture and the stamp replay; the first-visit tour, interrupting it and reduced motion; and phone width with no horizontal scroll. No test makes a network call.
+The end-to-end tests pick a lease, upload a PDF or text file, paste one, ask questions, check that unreadable or oversized files are refused with a reason, and check the proof chain and its citations; the "Can't tell" stamp and the outlined clause; that the verdict lands in view at 1280x720 and 1440x900; the seam, the suture and the stamp replay; the first-visit tour, interrupting it and reduced motion; and phone width with no horizontal scroll. No test makes a network call.
 
 ## Deploy
 Target: Cloudflare Pages (free tier). Build command `npm run build`, output directory `dist`; `functions/` deploys as Pages Functions. The local reader needs no secrets.

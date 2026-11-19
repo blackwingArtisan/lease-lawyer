@@ -50,3 +50,15 @@ describe('unknown answers', () => {
     await expect(ask({ topic: 'ghosts', facts: [], tenant: [] })).rejects.toThrow(/unknown topic/);
   });
 });
+
+describe('a rule base that proves both answers', () => {
+  it('returns unknown with no steps and flags the conflict', async () => {
+    const { RULEBASE_SOURCE } = await import('../../src/logic/program');
+    const broken = `${RULEBASE_SOURCE}\nrule(test_contradiction, verdict(pets, no), true).\n`;
+    const a = await ask({ topic: 'pets', facts: [], tenant: [], rulebase: broken });
+    expect(a.conflict).toBe(true);
+    expect(a.verdict).toBe('unknown');
+    expect(a.steps).toEqual([]);
+    expect(a.headline).toBe('The rule base proved both yes and no here, so it cannot give a safe answer.');
+  });
+});

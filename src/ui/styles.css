@@ -352,6 +352,12 @@ button.case:hover {
   border-color: var(--volt-deep);
 }
 
+.sample-pdf {
+  margin-top: 4px;
+  font-size: 0.74rem;
+  color: var(--fog);
+}
+
 .case-own .case-tab {
   background: var(--brass-dim);
   color: var(--ink);
@@ -360,8 +366,13 @@ button.case:hover {
 .case-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 6px;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.case-actions .chip {
+  padding: 3px 10px;
+  font-size: 0.8rem;
 }
 
 .paste {

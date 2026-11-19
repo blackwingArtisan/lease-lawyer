@@ -5,6 +5,8 @@ Notable changes to Lease Lawyer. The Kiro sessions and what they changed are rec
 ## Unreleased
 
 ### Added
+- PDF upload. The text layer is read in the browser with pdf.js (loaded only when a PDF is chosen), wrapped lines are reflowed into whole sentences so quotes stay verbatim, and scans, damaged files and very long documents are refused with a reason. A sample lease PDF can be downloaded from the "Your own" card; it reads to exactly the same facts as its text version.
+- `ask()` takes an optional rule base, the hook a per-state rule pack will use.
 - The suture: in the two-column layout, a sewn thread with cross-stitches runs from the quote in the lease to its Lease step in the proof chain. It starts on the clause the verdict turns on, follows the step you point at, focus or show, and redraws as the lease and the page scroll.
 - A 30-second tour that runs once on a first visit: the greedy lease is asked about its deposit and proved wrong in cited steps, the clause lights up, then the trick lease is asked about pets and answers "Can't tell". Captions explain each beat. Any click or key press hands control back, "Skip tour" ends it, and a "Replay the 30-second tour" chip in the masthead runs it again. Under reduced motion it never starts by itself. `?tour=on` forces it for recordings and `?tour=off` suppresses it.
 - The seam: every answer shows how it was made, sewn together in one strip. Reader (which reader, how many facts it proposed), Verifier (how many it kept word for word, how many it struck from the record, how many clauses were unreadable), Prolog (what it proved, in how many cited steps).
@@ -22,6 +24,9 @@ Notable changes to Lease Lawyer. The Kiro sessions and what they changed are rec
 - The hero line now states the promise: "Chatbots guess about your lease. Lease Lawyer proves it, or says it can't tell."
 
 ### Fixed
+- Pasted text over 200 KB is refused with a reason instead of being cut short, which could have dropped clauses and made the lease look silent.
+- A clause that defers to another document ("Entry by Landlord is governed by Schedule A") is flagged as unreadable even when it names no time or amount.
+- When the fact a proof needs sits in an unreadable clause, the answer names that clause ("Can't tell. Section 5 ...") instead of saying the lease is missing the fact.
 - The selected "Your own" card kept light text on a light background (contrast about 1.35:1); it now stays dark with a green outline.
 - The hidden file input no longer takes a tab stop.
 - Choosing a new lease scrolls the lease pane back to the top.

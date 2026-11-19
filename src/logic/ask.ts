@@ -56,6 +56,8 @@ export interface AskInput {
   tenant: TenantAnswer[];
   /** Clauses the coverage check flagged. The engine will not call the lease silent about their predicates. */
   unread?: UnreadClause[];
+  /** Prolog rule base to prove against. Defaults to the model jurisdiction. */
+  rulebase?: string;
 }
 
 const MAX_PATHS = 6;
@@ -65,10 +67,10 @@ const MAX_PATHS = 6;
  * known. If neither can be proven, runs the prover again allowing it to
  * assume tenant answers (then lease facts) and reports what it would need.
  */
-export async function ask({ topic, facts, tenant, unread = [] }: AskInput): Promise<Answer> {
+export async function ask({ topic, facts, tenant, unread = [], rulebase = RULEBASE_SOURCE }: AskInput): Promise<Answer> {
   const info = topicById(topic);
   if (!info) throw new Error(`unknown topic: ${topic}`);
-  const session = await PrologSession.load(PROVER_SOURCE, RULEBASE_SOURCE, factsProgram(facts, tenant, unread));
+  const session = await PrologSession.load(PROVER_SOURCE, rulebase, factsProgram(facts, tenant, unread));
 
   const yes = await session.once(`strict_proof(${topic}, yes, P)`, ['P']);
   const no = await session.once(`strict_proof(${topic}, no, P)`, ['P']);
@@ -127,6 +129,22 @@ export async function ask({ topic, facts, tenant, unread = [] }: AskInput): Prom
   for (const mode of ['tenant', 'lease'] as const) {
     const { paths, missing } = await abduce(session, topic, mode);
     if (paths.length > 0) {
+      // A lease fact the rules need may sit in a clause the reader could not read: then the lease is not missing it.
+      const unreadNeeded = mode === 'lease' ? unread.filter((u) => missing.some((m) => m.kind === 'lease' && m.predicate === u.predicate)) : [];
+      if (unreadNeeded.length > 0) {
+        const sections = unreadSections(unreadNeeded);
+        return {
+          ...base,
+          verdict: 'unknown',
+          headline: cantTellHeadline(sections),
+          steps: [],
+          tree: [],
+          query: `verdict(${topic}, V)`,
+          missing,
+          paths,
+          unread: sections,
+        };
+      }
       return {
         ...base,
         verdict: 'unknown',

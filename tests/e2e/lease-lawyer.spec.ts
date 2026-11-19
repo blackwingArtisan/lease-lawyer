@@ -2,6 +2,7 @@ import { expect, test } from './test';
 import { fileURLToPath } from 'node:url';
 
 const customLease = fileURLToPath(new URL('./fixtures/maple-terrace.txt', import.meta.url));
+const samplePdf = fileURLToPath(new URL('../../public/samples/gaslight-row-townhomes.pdf', import.meta.url));
 
 test.describe('Lease Lawyer', () => {
   test.beforeEach(async ({ page }) => {
@@ -200,5 +201,49 @@ test.describe('Lease Lawyer', () => {
     await expect(suture).toHaveAttribute('data-fact', last!);
     await leaseSteps.nth(0).hover();
     await expect(suture).toHaveAttribute('data-fact', first!);
+  });
+
+  test('reads an uploaded PDF in the browser and cites its clauses', async ({ page }) => {
+    await page.getByTestId('upload').setInputFiles(samplePdf);
+    await expect(page.getByTestId('fact-count')).toHaveText('13 facts extracted');
+    await expect(page.getByTestId('lease')).toContainText('Gaslight Row Townhomes');
+    await page.getByRole('button', { name: 'Deposit and wear and tear', exact: true }).click();
+    await expect(page.getByTestId('verdict')).toHaveAttribute('data-verdict', 'no');
+    await expect(page.getByTestId('cited-span').filter({ hasText: 'including charges for normal wear and tear' })).toHaveCount(1);
+  });
+
+  test('offers the sample PDF for download', async ({ page }) => {
+    const link = page.getByRole('link', { name: 'Get a sample lease PDF' });
+    const response = await page.request.get((await link.getAttribute('href'))!);
+    expect(response.status()).toBe(200);
+    expect(response.headers()['content-type']).toContain('pdf');
+  });
+
+  test('refuses a file it cannot read, says why, and keeps the current lease', async ({ page }) => {
+    await expect(page.getByTestId('fact-count')).toHaveText('10 facts extracted');
+    await page.getByTestId('upload').setInputFiles({ name: 'photo.png', mimeType: 'image/png', buffer: Buffer.from([0x89, 0x50, 0x4e, 0x47]) });
+    await expect(page.getByRole('alert')).toHaveText('PDF or plain-text leases only (.pdf or .txt).');
+    await page.getByTestId('upload').setInputFiles({ name: 'huge.txt', mimeType: 'text/plain', buffer: Buffer.alloc(200_001, 'a') });
+    await expect(page.getByRole('alert')).toHaveText('That file is over 200 KB. Paste the lease text instead.');
+    await page.getByTestId('upload').setInputFiles({ name: 'broken.pdf', mimeType: 'application/pdf', buffer: Buffer.from('not a pdf') });
+    await expect(page.getByRole('alert')).toContainText('That PDF could not be read.');
+    await expect(page.getByTestId('lease')).toContainText('Wychwood Arms');
+    await expect(page.getByTestId('fact-count')).toHaveText('10 facts extracted');
+  });
+
+  test('refuses pasted text over 200 KB instead of cutting it short', async ({ page }) => {
+    await page.getByRole('button', { name: 'Paste text' }).click();
+    await page.locator('#paste-text').fill('1. RENT. Rent is $900.00 monthly. ' + 'x'.repeat(200_000));
+    await page.getByRole('button', { name: 'Read this lease' }).click();
+    await expect(page.getByRole('alert')).toHaveText('That text is over 200 KB, more than one lease. Paste just the lease.');
+    await expect(page.getByTestId('lease')).toContainText('Wychwood Arms');
+  });
+
+  test('warns when a lease has no numbered sections to cite', async ({ page }) => {
+    await page.getByRole('button', { name: 'Paste text' }).click();
+    await page.locator('#paste-text').fill('This apartment rents for $900 a month and pets are fine.');
+    await page.getByRole('button', { name: 'Read this lease' }).click();
+    await expect(page.getByTestId('lease')).toContainText('No numbered sections were found, so nothing could be cited.');
+    await expect(page.getByTestId('fact-count')).toHaveText('0 facts extracted');
   });
 });

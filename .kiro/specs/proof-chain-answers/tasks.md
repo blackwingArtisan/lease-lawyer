@@ -15,19 +15,19 @@ A task is checked only when the code and a test that exercises it both exist. Pl
   - [x] 6.1 Plain-English rule text and answer sentences, kept in sync by test
   - [x] 6.2 Verdict matrix, boundary cases and no-conflict sweep (Req 4.4)
 - [x] 7. Tau Prolog session wrapper and browser/Node loader
-- [ ] 8. `ask()`: strict proof, conflict, headline, abduction, minimal sets, missing facts (Req 4.3, 4.4, 4.6, 4.7, 6.1-6.4)
+- [x] 8. `ask()`: strict proof, conflict, headline, abduction, minimal sets, missing facts (Req 4.3, 4.4, 4.6, 4.7, 6.1-6.4)
   - [x] 8.1 Unit tests for unknown handling
-  - [ ] 8.2 Unit test for the branch where both Yes and No are provable: verdict unknown, no steps, `conflict` true (Req 4.4, 4.7). The sweep only shows the branch is never reached on the samples.
+  - [x] 8.2 Unit test for the branch where both Yes and No are provable: verdict unknown, no steps, `conflict` true (Req 4.4, 4.7). The sweep only shows the branch is never reached on the samples.
 - [x] 9. Proof tree to numbered steps with citations and uses (Req 5.1-5.3, 5.6-5.8, 5.11)
   - [x] 9.1 Unit tests for order, citations, tenant and absent steps
 - [x] 10. Keyword classifier with tenant facts and denials (Req 3.1, 3.2, 3.4)
 - [x] 11. Adapter ports, local default, remote client, Bedrock server adapter and Pages Functions (Req 2.3, 7.5, 7.10)
   - [x] 11.1 Unit tests with stubbed fetch; functions refuse without credentials. The Bedrock call itself is type-checked and never run in tests, by design.
-- [ ] 12. UI: case files, upload and paste, parchment lease with highlights (Req 1.1-1.10, 2.6, 5.5)
+- [x] 12. UI: case files, upload and paste, parchment lease with highlights (Req 1.1-1.10, 2.6, 5.5)
   - [x] 12.1 End-to-end: first sample on open, pick, upload and paste a lease (Req 1.1-1.3, 1.5, 1.6)
-  - [ ] 12.2 Test that a non-text file and a file over 200 KB are refused with a reason and the current lease stays loaded (Req 1.4, 1.7, 1.8). The code exists in `CaseFiles`; nothing tests it.
-  - [ ] 12.3 Refuse pasted text over 200 KB with a reason. `CaseFiles` truncates it silently today, which drops clauses without telling the renter (Req 1.9).
-  - [ ] 12.4 Test the "no numbered sections" warning in `LeasePane` (Req 1.10)
+  - [x] 12.2 Test that a non-text file and a file over 200 KB are refused with a reason and the current lease stays loaded (Req 1.4, 1.7, 1.8). The code exists in `CaseFiles`; nothing tests it.
+  - [x] 12.3 Refuse pasted text over 200 KB with a reason. `CaseFiles` truncates it silently today, which drops clauses without telling the renter (Req 1.9).
+  - [x] 12.4 Test the "no numbered sections" warning in `LeasePane` (Req 1.10)
 - [ ] 13. UI: question form, topic chips, out-of-scope list (Req 3.3, 3.5, 3.6)
   - [x] 13.1 End-to-end: out-of-scope question is refused (Req 3.3)
   - [ ] 13.2 Assert that the out-of-scope view shows no verdict and lists every topic (Req 3.5, 3.6)
@@ -60,7 +60,11 @@ A task is checked only when the code and a test that exercises it both exist. Pl
 - [x] 23. UI: unread section list with a keyboard-accessible button that focuses the clause, `unread/2` lines in the facts view, updated "How it works" and Bedrock prompt (Req 8.10-8.12, 8.17, 8.18)
   - [x] 23.1 End-to-end: paste a lease with an unreadable pets clause, ask "Can I keep a cat?", expect "Can't tell", no "says nothing about pets", the `unread` line, and focus on the clause
   - [x] 23.2 Unit test: the Bedrock reader prompt tells the model not to guess
-- [ ] 24. Name the unread section when an answer reports a missing lease fact for a predicate that is unread (Req 8.19). Today the "lease is missing a fact" answer does not mention it.
-- [ ] 25. Unit test that the local reader makes no network call, by stubbing `fetch` to throw (Req 2.7, 7.9)
+- [x] 24. Name the unread section when an answer reports a missing lease fact for a predicate that is unread (Req 8.19). Today the "lease is missing a fact" answer does not mention it.
+- [x] 25. Unit test that the local reader makes no network call, by stubbing `fetch` to throw (Req 2.7, 7.9)
 - [x] 26. Route small-pet and "deposit back" questions, and flag "non-refundable" deposit and "at any time" or "without notice" entry clauses as unread (Req 3.1, 8.1, 8.2)
   - [x] 26.1 Unit tests: classifier wordings; coverage cue wordings; `ask()` answers "Can't tell" for both clause kinds
+- [x] 27. PDF upload: read the text layer in the browser with pdf.js, reflow wrapped lines into sentences, refuse scans, damaged files and text over 200 KB with a reason (Req 1.3, 1.4, 1.9)
+  - [x] 27.1 Unit tests: line and paragraph reflow; the sample lease PDF reads to the same facts as its text. End-to-end: upload the sample PDF, ask, check the cited quote; refusals keep the current lease
+- [x] 28. Flag a clause that defers to another document ("governed by Schedule A") even when it names no time or amount (Req 8.1, 8.2)
+  - [x] 28.1 Unit tests: entry clause flagged, "reasonable notice" still not flagged, `ask()` answers "Can't tell"

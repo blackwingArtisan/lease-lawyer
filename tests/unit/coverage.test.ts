@@ -263,3 +263,40 @@ describe('clauses that look silent but are not', () => {
     expect(a.headline).toMatch(/^Can't tell\. Section 8 \(ACCESS\) mentions landlord entry,/);
   });
 });
+
+describe('clauses that defer to another document', () => {
+  const text = [
+    '1. RENT. Monthly rent is $1,000.00.',
+    '5. RENT INCREASES. Rent increases are set out in Schedule A.',
+    '6. ENTRY. Entry by Landlord is governed by Schedule A.',
+  ].join('\n\n');
+  const r = (() => {
+    const lease = parseLease('t', text);
+    return verifyFacts(lease, extractFacts(lease));
+  })();
+
+  it('flags an entry clause that names no time but points to a schedule', () => {
+    expect(r.unread.map((u) => `${u.predicate}@${u.clauseId}`)).toContain('entry_notice_hours@s6');
+    expect(unread('6. ENTRY. Landlord may enter at reasonable times with reasonable notice.')).toEqual([]);
+  });
+
+  it('answers "can\'t tell" about entry instead of applying the default notice rule', async () => {
+    const a = await ask({ topic: 'entry_without_notice', facts: r.facts, tenant: [], unread: r.unread });
+    expect(a.verdict).toBe('unknown');
+    expect(a.headline).toMatch(/^Can't tell\. Section 6 \(ENTRY\) mentions landlord entry,/);
+  });
+
+  it('names the unread section when the missing lease fact sits in it, instead of calling it missing', async () => {
+    const a = await ask({ topic: 'rent_increase', facts: r.facts, tenant: [], unread: r.unread });
+    expect(a.verdict).toBe('unknown');
+    expect(a.headline).toMatch(/^Can't tell\. Section 5 \(RENT INCREASES\) mentions rent increases,/);
+    expect(a.headline).not.toMatch(/missing a fact/);
+    expect(a.unread.map((u) => u.clauseId)).toEqual(['s5']);
+    expect(a.missing.map((m) => (m.kind === 'lease' ? m.predicate : m.name))).toContain('rent_escalation_percent');
+  });
+
+  it('still says the lease is missing a fact when no clause mentions it', async () => {
+    const a = await ask({ topic: 'rent_increase', facts: r.facts, tenant: [], unread: [] });
+    expect(a.headline).toBe('Not proven. The lease is missing a fact the rules need.');
+  });
+});

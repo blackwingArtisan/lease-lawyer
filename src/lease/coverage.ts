@@ -125,6 +125,9 @@ export const CUES: readonly CueSpec[] = [
   },
 ];
 
+/** A clause that sends the reader to another document ("see Rider B", "governed by Schedule A") says something, just not here. */
+const ELSEWHERE = /\b(?:schedule|rider|exhibit|addendum|attachment|appendix)\s+(?:[A-Z]|\d{1,2})\b/i;
+
 const SUBJECTS = new Map(CUES.map((c) => [c.predicate, c.subject]));
 
 /** A few words naming what a predicate is about, e.g. "pets" for pet_policy. */
@@ -151,7 +154,7 @@ export function findUnread(lease: ParsedLease, covered: readonly CoveredFact[]):
       if (read.has(`${spec.predicate}@${clause.id}`)) continue;
       const clean = (text: string) => (spec.strip ? text.replace(spec.strip, ' ') : text);
       const whole = clean([clause.title, ...parts].join(' '));
-      if (spec.needs && !spec.needs.test(whole)) continue;
+      if (spec.needs && !spec.needs.test(whole) && !ELSEWHERE.test(whole)) continue;
       const hit =
         (spec.titleCue?.test(clean(clause.title)) ?? false) ||
         [clause.title, ...parts].some((text) => {
