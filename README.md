@@ -12,7 +12,7 @@ Ask a plain question ("Can my landlord keep my deposit for normal wear and tear?
 | --- | --- | --- |
 | ![Gaslight Row: No, with the proof chain and the cited clause lit](docs/media/verdict-no.png) | ![Hollowmere Flats: Can't tell, with the unreadable clauses outlined](docs/media/cant-tell.png) | ![The same No at phone width](docs/media/phone.png) |
 
-A Kiroween 2026 entry in the **Frankenstein** category: Prolog, the logic language of 1972, stitched to a modern language model. The model reads; Prolog decides.
+A Kiroween 2026 entry in the **Frankenstein** category: Prolog, the logic language of 1972, stitched to a 2026 language model at a single seam. The model reads; Prolog decides; and nothing crosses the seam without a word-for-word quote from the lease.
 
 ## Try it in 30 seconds
 1. Open the app. On a first visit a 30-second tour plays by itself; press **Replay the 30-second tour** to see it again.
@@ -21,10 +21,16 @@ A Kiroween 2026 entry in the **Frankenstein** category: Prolog, the logic langua
 
 Nothing to install, no account, no network calls: the default reader runs in your browser.
 
+## A $600 example
+*A composite example, not a real case.* A renter moves out of a one-bedroom and expects her $1,500 deposit back. The landlord keeps $600 for carpet cleaning and a full repaint, and points to the lease: "including charges for normal wear and tear." She asks a chatbot, and gets a careful paragraph about what "most states" allow, with nothing she can check.
+
+Lease Lawyer answers the same question on the same kind of clause (sample lease Gaslight Row, §6) with a **No** in six numbered steps: two quotes from her lease, then the rules that make the wear-and-tear charge void. Each step names its source, so she can hand the chain to a tenant counselor to check, rather than take it on trust.
+
 ## Why it matters
 - About **44.6 million** homes in the US are rented ([US Census Bureau, 2019-2023 American Community Survey](https://www.census.gov/newsroom/press-releases/2024/acs-5-year-homeowners-renters.html)). Each one has a lease its tenant did not write.
 - Low-income Americans get no or not enough legal help for **92%** of their substantial civil legal problems, and housing is among the most common ([Legal Services Corporation, The Justice Gap, 2022](https://justicegap.lsc.gov/resource/executive-summary/)).
 - Language models make things up about law. Stanford researchers found general-purpose chatbots **hallucinated on 58% to 82%** of legal queries, and even purpose-built legal research tools did so **more than 17% of the time** ([Stanford HAI, 2024](https://hai.stanford.edu/news/ai-trial-legal-models-hallucinate-1-out-6-or-more-benchmarking-queries)).
+- The Legal Services Corporation funds **129** independent nonprofit legal aid programs ([LSC, Who We Are](https://www.lsc.gov/about-lsc/who-we-are)): counselors who already check leases by hand, and the first people a checkable proof saves time for.
 
 A confident wrong "yes" about a lease costs a renter a deposit, a pet, or a month's rent. Lease Lawyer is built so it cannot give one without a proof.
 
@@ -42,10 +48,12 @@ Reproduce it with `npm run eval`. Both leases are in [`tests/holdout/`](tests/ho
 
 Neither version kept a fact either lease does not state. Today the 4 clauses of lease B that the reader cannot read are flagged, and 3 answers that depend on them say "Can't tell".
 
-## Why not just ask ChatGPT?
+## Why not just ask a chatbot?
 A chatbot answers every question, fluently, whether or not the lease supports the answer. It cannot show you which words its answer rests on, and it does not know when it has not understood a clause.
 
-Lease Lawyer splits the job. A reader (a local rule-based reader, or Claude on Amazon Bedrock) only turns clauses into typed facts, each with the exact sentence it came from. A verifier throws out any fact whose quote is not word for word in the clause it cites. A coverage check marks clauses that mention a topic but yielded no fact. Then Prolog, not the model, decides, and it can only say Yes or No when it has a proof. Everything else is "Can't tell" or a follow-up question.
+We asked Claude the same three questions with nothing but the lease, once each, and put its answers beside Lease Lawyer's in [docs/two-answers.md](docs/two-answers.md). It invented nothing about the leases, and it spotted the missing rider. It also stated general law with no source, including a Florida notice period that has been out of date since 2022. A renter cannot tell that sentence from the correct ones around it; a proof step that cites nothing cannot exist.
+
+Lease Lawyer splits the job. A reader (a local rule-based reader, or Claude on Amazon Bedrock) only turns clauses into typed facts, each with the exact sentence it came from. A verifier throws out any fact whose quote is not word for word in the clause it cites. A coverage check marks clauses that mention a topic but yielded no fact. Then Prolog, not the model, decides, and it can only say Yes or No when it has a proof. Everything else is "Can't tell" or a follow-up question. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) has the pipeline diagram and the details.
 
 ## What it does
 - **Five case files.** Four invented sample leases (careful, greedy, thin, and the trick lease) plus your own: upload a PDF or a text file, or paste the text. PDFs are read in your browser with pdf.js and never leave it; a sample lease PDF is one click away.
@@ -62,10 +70,10 @@ Rules-as-code is an established field. [Catala](https://catala-lang.org/) is a p
 
 Those tools encode the law. Lease Lawyer adds the other half: a reader for a document nobody encoded (your lease), a verifier that drops any fact whose quote is not in the clause, a coverage check that turns "the reader missed it" into "Can't tell", and abduction that turns an open proof into the next question to ask.
 
-## Beyond Kiroween
-- **Free for renters**, in the browser, with no account and nothing sent anywhere by default.
-- **A seat for counselors and tenant unions:** shareable proof links, batch review of a building's leases, and the trick-clause scan as a checklist.
-- **Per-state rule packs** as the moat. Each pack is a Prolog file with verbatim statute citations and a test matrix, so adding a state is reviewable, testable work, not a new prompt.
+## The business case
+- **Free for renters**, in the browser, with no account and nothing sent anywhere by default. The free tier costs nothing to run: the default reader and the prover run on the renter's device.
+- **A paid seat for legal aid counselors and tenant unions:** shareable proof links, batch review of a building's leases, and the trick-clause scan as a checklist. A counselor checks a cited chain instead of reading a lease from scratch.
+- **Per-state rule packs** as the moat. Each pack is a Prolog file with verbatim statute citations and a test matrix, so adding a state is reviewable, testable work, not a new prompt, and a chatbot cannot copy it by being more fluent.
 
 ## Built with Kiro
 Kiro's spec-driven workflow shaped the project; [KIRO-LOG.md](KIRO-LOG.md) records each Kiro session, its prompt, what it changed, the credits it used and the test results after it.
@@ -75,88 +83,20 @@ Kiro's spec-driven workflow shaped the project; [KIRO-LOG.md](KIRO-LOG.md) recor
 - **MCP** (`.kiro/settings/mcp.json`): the project's own prover as an MCP server (`tools/mcp-prover/`, tools `list_rules`, `read_lease`, `ask_topic` and `explain_proof`), so an agent editing `rulebase.pl` can prove a topic against a real lease before it saves; plus Context7 for library docs and the AWS Documentation server for Bedrock. The prover server is covered by unit tests over the MCP protocol.
 - **The Kiro pass** reviewed the spec against the code, tightened it into EARS, and built the wider reader, the coverage check and the "Can't tell" answer; unit tests went from 92 to 198 across that pass and its follow-up. Most of the rest was built outside Kiro; the log maps every commit to who built it. Today: 252 unit and 26 end-to-end tests, run by CI on every push.
 
-## How it works
-
-```
-lease text ─▶ parseLease ─▶ clauses
-                 └─▶ LeaseReader (local rules | Claude on Bedrock) ─▶ candidate facts ─▶ verifyFacts ─▶ facts + quote offsets
-                                                                                        └─▶ coverage check ─▶ unread clauses
-question ───▶ QuestionTranslator (local classifier | Claude on Bedrock) ─▶ topic + tenant facts
-facts + unread clauses + tenant facts ─▶ Tau Prolog: prover.pl + rulebase.pl
-       strict_proof(Topic, yes|no, Proof) ─▶ proof tree ─▶ numbered, cited steps ─▶ UI
-       assumption_sets(Topic, V, tenant|lease, Sets) ─▶ missing facts + follow-up questions
-```
-
-- **The reader** turns clauses into facts from a closed vocabulary, such as `late_fee(75)` and `early_termination_option(job_relocation, 60, 1)`. The local reader handles ordinary lease wording: Tenant, Lessee, Resident or Occupant; Landlord, Lessor, Owner or Management; "No animals of any kind"; "upon one day's notice"; "rent will increase three percent (3%)"; and double negatives such as "shall not fail to obtain written consent". When a sentence is ambiguous it proposes nothing.
-- **The verifier** keeps a fact only if its quote appears word for word in the clause it cites. Kept quotes are highlighted in the lease.
-- **The coverage check** looks for clauses that mention a topic (pets, subletting, entry, late fees, the deposit and so on) but yielded no fact, including wording such as "non-refundable", "at any time" and "see Rider B". The prover's closed-world `absent/1` then fails for that topic, so no proof can rest on silence.
-- **The prover** is a proof-producing meta-interpreter in Tau Prolog over a rule base for an invented "model jurisdiction": eight topics (deposit and wear and tear, leaving early, pets and assistance animals, landlord entry, late fees, subletting, repair and deduct, rent increases) in 55 rules, including one that voids lease terms waiving tenant protections.
-- **Abduction** finds the smallest sets of tenant or lease facts that would complete an open proof, and the UI asks for them.
-
-| Path | What it holds |
-|---|---|
-| `src/lease/` | parser, extractor, verifier, coverage check, fact vocabulary, sample leases |
-| `src/logic/prover.pl` | meta-interpreter: proof terms, closed-world `absent/1` (blocked for unread predicates), abduction modes |
-| `src/logic/rulebase.pl` | the model-jurisdiction rules as `rule(Id, Head, Body)` |
-| `src/logic/` | Tau Prolog session, `ask()`, proof tree to steps, rule text |
-| `src/question/` | keyword classifier |
-| `src/adapters/` | reader and translator ports: local, remote, Bedrock |
-| `functions/api/` | Cloudflare Pages Functions that call Bedrock with server-side credentials |
-| `src/ui/` | React components and the theme |
-
-### Readers: local and Claude on Amazon Bedrock
-
-| Port | Local (default, free, offline) | Bedrock (written and type-checked, not run in tests) |
-|---|---|---|
-| Lease reader | rule-based sentence extractor | Claude on Amazon Bedrock via `@anthropic-ai/bedrock-sdk`, structured output against the closed vocabulary |
-| Question translator | weighted keyword classifier | Claude on Amazon Bedrock, structured output against the topic list |
-
-Choose with `VITE_AI_BACKEND=local|bedrock` (see `.env.example`). With `bedrock`, the browser posts to `/api/read-lease` and `/api/translate`; the Pages Functions read `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` (and optional `AWS_SESSION_TOKEN`, `BEDROCK_MODEL_ID`) from Pages secrets and answer 503 when they are not set. Model output goes through the same verifier and coverage check as the local reader, so a made-up clause quote is dropped before Prolog sees it.
-
-The Bedrock path uses the SDK's `AnthropicBedrockMantle` client (Bedrock's Messages API endpoint) and defaults to the model ID `anthropic.claude-opus-5-5`, following Anthropic's Bedrock naming. Both are checked against the installed SDK's types and Anthropic's provider documentation; the path has not yet been called against a live AWS account. Before deploying it, confirm the model is enabled for your account and region in the Bedrock console, or set `BEDROCK_MODEL_ID`.
-
-`npm run smoke:bedrock` is that first live check. On its own it prints the plan and a cost estimate (about $0.50 at most for the six leases) and sends nothing. With `-- --yes` it reads the four samples and the two holdout leases with Claude on Amazon Bedrock, using `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` or the profile in `AWS_PROFILE`, verifies every proposed fact as the app does, and writes one reading per lease plus a summary to `docs/bedrock-smoke/`: facts proposed, kept and struck from the record (with each struck quote and the reason), unread clauses, the holdout scores, tokens and cost. Each reading is labelled "Claude on Amazon Bedrock, recorded <date>". It stops before any call that could take the run past `--max-usd` (default $1).
-
-## Run it
+## Run and test it
 Node 22 or later.
 
 ```bash
 npm install
-npm run dev          # http://localhost:3160
-```
-
-Production build and preview:
-
-```bash
-npm run build
-npm run preview      # http://localhost:3161
-```
-
-## Test it
-
-```bash
-npm run typecheck
-npm test                              # Vitest unit tests
+npm run dev                           # http://localhost:3160
+npm run typecheck && npm test         # Vitest unit tests
 npx playwright install chromium       # first time only
 npm run test:e2e                      # Playwright against the production build, port 3162 (set PW_PORT to change it)
 npm run eval                          # score the reader on the unseen leases in tests/holdout/
+npm run smoke:bedrock                 # plan and cost of the first live Bedrock reading; sends nothing without -- --yes
 ```
 
-`.github/workflows/ci.yml` runs all four on every push and pull request. A unit test keeps each Kiro spec's task list honest: every requirement a task cites must exist, and no task is checked while a sub-task is open.
-
-The unit tests cover the parser; the extractor on each sample lease, on two invented leases and on a table of one-sentence wordings; the coverage check, including "non-refundable", "at any time", rider and schedule references; PDF text reflow, and the sample PDF reading to the same facts as its text; every verifier rejection; Prolog injection safety; the question classifier; a 33-case verdict matrix across leases and topics; boundary cases; a sweep proving no topic ever proves both Yes and No; rule text kept in sync with the Prolog rule base; proof step order and citations; unknown handling; and the adapters with `fetch` stubbed.
-
-The end-to-end tests pick a lease, upload a PDF or text file, paste one, ask questions, check that unreadable or oversized files are refused with a reason, and check the proof chain and its citations; the "Can't tell" stamp and the outlined clause; that the verdict lands in view at 1280x720 and 1440x900; the seam, the suture and the stamp replay; the first-visit tour, interrupting it and reduced motion; and phone width with no horizontal scroll. No test makes a network call.
-
-## Deploy
-Target: Cloudflare Pages (free tier). `wrangler.toml` holds the project settings: output directory `dist`, with `functions/` deployed as Pages Functions. The default local reader needs no secrets.
-
-```bash
-npm ci && npm run build
-npx wrangler pages deploy            # first run creates the lease-lawyer project
-```
-
-`public/_headers` sets long-lived caching for the hashed assets and a few security headers. To switch the reader to Claude on Amazon Bedrock, build with `VITE_AI_BACKEND=bedrock` and set `AWS_REGION`, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` (and optionally `BEDROCK_MODEL_ID`) as Pages secrets with `npx wrangler pages secret put <NAME>`; see `.env.example`.
+`.github/workflows/ci.yml` runs the type check, unit tests, eval and end-to-end tests on every push and pull request. No test makes a network call. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) covers what the tests check, the two readers, the Bedrock smoke run and deploying to Cloudflare Pages.
 
 ## Not legal advice
 The rule base describes an invented model jurisdiction, written to resemble common US landlord-tenant rules for teaching and triage. Real rules vary by state and city.

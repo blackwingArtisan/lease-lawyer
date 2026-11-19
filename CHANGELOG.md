@@ -5,12 +5,14 @@ Notable changes to Lease Lawyer. The Kiro sessions and what they changed are rec
 ## Unreleased
 
 ### Added
+- `docs/two-answers.md`: three lease questions asked once each of Claude with only the lease, beside Lease Lawyer's answers, with the setup and every answer verbatim.
+- `docs/ARCHITECTURE.md`: the pipeline as a Mermaid diagram, the code map, the two readers, the Bedrock smoke run, what the tests cover, and deploying.
 - `npm run smoke:bedrock`: the first live check of the Bedrock reader. Without `--yes` it prints the plan and a cost estimate and sends nothing; with it, it reads the four samples and two holdout leases, verifies each proposed fact, scores the holdouts with the eval scorer, prices each call from its token usage, stops before a spending cap, and writes labelled readings and a summary to `docs/bedrock-smoke/`. The Bedrock adapter now reports the model and token usage of each reading, and accepts a named AWS profile for local tools.
 - A second Kiro spec, `.kiro/specs/pdf-reader/`, headed "documented after the build": requirements, design and tasks for PDF upload, written from the shipped code and tests. Three untested criteria are open tasks.
 - Continuous integration (`.github/workflows/ci.yml`): type check, unit tests, the holdout eval and the Playwright suite on every push and pull request, with a README badge.
 - A unit test for every Kiro spec's `tasks.md`: each cited requirement exists, and no task is checked while one of its sub-tasks is open.
 - `npm run eval`: scores the reader and prover on the two unseen leases in `tests/holdout/` against an answer key, beside the first version rebuilt from git history, and prints facts read, facts kept that the lease does not state, Yes or No answers resting on a false "silent", and "Can't tell" answers. A unit test pins today's numbers.
-- Cloudflare Pages deploy settings (`wrangler.toml`) and `public/_headers` for asset caching and security headers; the README's Deploy section has the two commands.
+- Cloudflare Pages deploy settings (`wrangler.toml`) and `public/_headers` for asset caching and security headers; the Deploy section of `docs/ARCHITECTURE.md` has the two commands.
 - An MCP server for the prover (`tools/mcp-prover/`, `npm run mcp:prover`) with `list_rules`, `read_lease`, `ask_topic` and `explain_proof`, and a Kiro MCP config that registers it alongside Context7 and the AWS Documentation server.
 - Kiro IDE `.kiro.hook` copies of the extraction and rule-base guards, kept in step with the agent hooks by a unit test.
 - README media: a GIF of the first-visit tour and three stills (a proved No, a Can't tell, the phone layout), regenerated with `npm run media` against a running build.
@@ -29,6 +31,7 @@ Notable changes to Lease Lawyer. The Kiro sessions and what they changed are rec
 - Before the first question, the result area shows an unlit proof chain: "Ask, and the circuit will charge."
 
 ### Changed
+- The README is shorter: a composite $600 deposit example, the chatbot comparison, the business case, and one block of run and test commands; the details moved to `docs/ARCHITECTURE.md`.
 - KIRO-LOG.md opens with a table of the Kiro features the repository uses, with files, evidence and results, then the measured results and a dated timeline; the exact prompts moved to an appendix.
 - The README leads with the problem and the promise: a 30-second path through the app, sourced figures on renters, the justice gap and legal-AI hallucination, the measured drop from 4 of 8 confident wrong answers to 0 on an unseen lease, why a chatbot alone is not enough, prior art (Catala, Blawx, Logical English, Docassemble) and what this adds, and where it goes next. The engine details follow below.
 - The verdict lands in view: after a question is asked, the page scrolls the result to the top of the window (instantly under reduced motion) and moves focus to it. A smaller masthead and a tighter case strip keep the topic chips above the fold at 1280x720, and an end-to-end test checks the stamp is fully in view at 1280x720 and 1440x900.
