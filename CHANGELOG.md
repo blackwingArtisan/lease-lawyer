@@ -5,6 +5,7 @@ Notable changes to Lease Lawyer. The Kiro sessions and what they changed are rec
 ## Unreleased
 
 ### Added
+- Cloudflare Pages deploy settings (`wrangler.toml`) and `public/_headers` for asset caching and security headers; the README's Deploy section has the two commands.
 - An MCP server for the prover (`tools/mcp-prover/`, `npm run mcp:prover`) with `list_rules`, `read_lease`, `ask_topic` and `explain_proof`, and a Kiro MCP config that registers it alongside Context7 and the AWS Documentation server.
 - Kiro IDE `.kiro.hook` copies of the extraction and rule-base guards, kept in step with the agent hooks by a unit test.
 - README media: a GIF of the first-visit tour and three stills (a proved No, a Can't tell, the phone layout), regenerated with `npm run media` against a running build.

@@ -1,0 +1,6 @@
+# Cloudflare Pages project. Deploy with: npm run build && npx wrangler pages deploy
+# Bedrock credentials, if used, are Pages secrets (wrangler pages secret put AWS_ACCESS_KEY_ID), never in this file.
+name = "lease-lawyer"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-11-01"
+compatibility_flags = ["nodejs_compat"]

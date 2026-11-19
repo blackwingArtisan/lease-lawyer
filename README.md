@@ -131,13 +131,21 @@ The unit tests cover the parser; the extractor on each sample lease, on two inve
 The end-to-end tests pick a lease, upload a PDF or text file, paste one, ask questions, check that unreadable or oversized files are refused with a reason, and check the proof chain and its citations; the "Can't tell" stamp and the outlined clause; that the verdict lands in view at 1280x720 and 1440x900; the seam, the suture and the stamp replay; the first-visit tour, interrupting it and reduced motion; and phone width with no horizontal scroll. No test makes a network call.
 
 ## Deploy
-Target: Cloudflare Pages (free tier). Build command `npm run build`, output directory `dist`; `functions/` deploys as Pages Functions. The local reader needs no secrets.
+Target: Cloudflare Pages (free tier). `wrangler.toml` holds the project settings: output directory `dist`, with `functions/` deployed as Pages Functions. The default local reader needs no secrets.
+
+```bash
+npm ci && npm run build
+npx wrangler pages deploy            # first run creates the lease-lawyer project
+```
+
+`public/_headers` sets long-lived caching for the hashed assets and a few security headers. To switch the reader to Claude on Amazon Bedrock, build with `VITE_AI_BACKEND=bedrock` and set `AWS_REGION`, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` (and optionally `BEDROCK_MODEL_ID`) as Pages secrets with `npx wrangler pages secret put <NAME>`; see `.env.example`.
 
 ## Not legal advice
 The rule base describes an invented model jurisdiction, written to resemble common US landlord-tenant rules for teaching and triage. Real rules vary by state and city.
 
 ## Credits
 - [Tau Prolog](http://tau-prolog.org/) by José Antonio Riaza Valverde, BSD-3-Clause.
+- [pdf.js](https://mozilla.github.io/pdf.js/) by Mozilla, Apache-2.0, reads uploaded PDFs in the browser.
 - Fonts: IM Fell English (OFL), Special Elite (Apache 2.0), Spectral (OFL), IBM Plex Mono (OFL), via Fontsource.
 - Sample leases, companies, people, addresses and phone numbers are fictional.
 
