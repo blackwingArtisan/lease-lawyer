@@ -1,0 +1,43 @@
+{
+  "about": "Two invented leases written after the first reader was built, with wording unlike the sample leases. 'facts' lists every fact each lease states, in the app's fact vocabulary. 'alsoCovers' names predicates a clause speaks to without stating a single value, so an answer resting on the lease being silent about them is wrong.",
+  "leases": [
+    {
+      "id": "holdout-a",
+      "file": "holdout-a-thornbury.txt",
+      "name": "Lease A (Thornbury Property Group)",
+      "facts": [
+        "term(fixed)",
+        "monthly_rent(1390)",
+        "late_fee(45)",
+        "security_deposit(1390)",
+        "deposit_deduction(damage_beyond_wear)",
+        "pet_policy(prohibited)",
+        "entry_notice_hours(48)",
+        "sublet_policy(consent_required)",
+        "early_termination_option(any,30,1)",
+        "rent_escalation_percent(2)"
+      ],
+      "alsoCovers": ["late_fee_grace_days"]
+    },
+    {
+      "id": "holdout-b",
+      "file": "holdout-b-penhallow.txt",
+      "name": "Lease B (Iris Penhallow)",
+      "facts": [
+        "term(fixed)",
+        "monthly_rent(2050)",
+        "late_fee(80)",
+        "late_fee_grace_days(5)",
+        "security_deposit(2050)",
+        "deposit_deduction(damage_beyond_wear)",
+        "pet_policy(consent_required)",
+        "entry_notice_hours(12)",
+        "sublet_policy(prohibited)",
+        "early_termination_option(job_relocation,60,0)",
+        "repair_deduct_waiver",
+        "rent_escalation_percent(3.5)"
+      ],
+      "alsoCovers": []
+    }
+  ]
+}

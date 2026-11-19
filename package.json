@@ -18,6 +18,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "check": "npm run typecheck && npm test",
+    "eval": "node scripts/eval.mjs",
     "sample-pdf": "node scripts/make-sample-pdf.mjs",
     "media": "node scripts/capture-media.mjs",
     "mcp:prover": "vite build -c tools/mcp-prover/vite.config.ts && node tools/mcp-prover/dist/server.js"

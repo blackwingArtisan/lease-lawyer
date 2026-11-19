@@ -29,6 +29,17 @@ A confident wrong "yes" about a lease costs a renter a deposit, a pet, or a mont
 ### Measured: confident wrong answers, 4 of 8 down to 0
 On a lease written after the reader was built, with wording unlike the samples, the first version gave **4 of its 8 topic answers** on the strength of the lease being "silent" about something it actually covered. After the coverage check and the wider reader (built in the Kiro pass described in [KIRO-LOG.md](KIRO-LOG.md)), **none** did, on that lease or on a second unseen one: every clause the reader could not read was flagged, and those answers became "Can't tell". Facts read from the first unseen lease went from 1 of 10 to 10 of 10.
 
+Reproduce it with `npm run eval`. Both leases are in [`tests/holdout/`](tests/holdout/) with an answer key; the script rebuilds the first version from git history and scores it beside today's code:
+
+| Unseen lease | Measure | First version | Today |
+| --- | --- | --- | --- |
+| A | facts read | 1 of 10 | 10 of 10 |
+| A | Yes/No resting on a false "silent" | 4 of 8 | 0 of 8 |
+| B | facts read | 4 of 12 | 8 of 12 |
+| B | Yes/No resting on a false "silent" | 2 of 8 | 0 of 8 |
+
+Neither version kept a fact either lease does not state. Today the 4 clauses of lease B that the reader cannot read are flagged, and 3 answers that depend on them say "Can't tell".
+
 ## Why not just ask ChatGPT?
 A chatbot answers every question, fluently, whether or not the lease supports the answer. It cannot show you which words its answer rests on, and it does not know when it has not understood a clause.
 
@@ -60,7 +71,7 @@ Kiro's spec-driven workflow shaped the project; [KIRO-LOG.md](KIRO-LOG.md) recor
 - **Spec** (`.kiro/specs/proof-chain-answers/`): requirements in EARS form, the design, and a task list in which every task names its requirements and is checked only when code and a test exist.
 - **Hooks** (`.kiro/hooks/`): run the unit tests when source or Prolog files are saved, guard the rule base and rule text, guard the extractor and coverage check, and type-check when the agent stops. The two guards also ship as Kiro IDE `.kiro.hook` files with the same prompt; a unit test keeps each pair in step and checks that every matcher fires on both repo-relative and absolute paths.
 - **MCP** (`.kiro/settings/mcp.json`): the project's own prover as an MCP server (`tools/mcp-prover/`, tools `list_rules`, `read_lease`, `ask_topic` and `explain_proof`), so an agent editing `rulebase.pl` can prove a topic against a real lease before it saves; plus Context7 for library docs and the AWS Documentation server for Bedrock. The prover server is covered by unit tests over the MCP protocol.
-- **The Kiro pass** reviewed the spec against the code, tightened it into EARS, and built the wider reader, the coverage check and the "Can't tell" answer; unit tests went from 92 to 198 across that pass and its follow-up. Most of the rest was built outside Kiro; the log maps every commit to who built it. Today: 238 unit and 26 end-to-end tests.
+- **The Kiro pass** reviewed the spec against the code, tightened it into EARS, and built the wider reader, the coverage check and the "Can't tell" answer; unit tests went from 92 to 198 across that pass and its follow-up. Most of the rest was built outside Kiro; the log maps every commit to who built it. Today: 241 unit and 26 end-to-end tests.
 
 ## How it works
 

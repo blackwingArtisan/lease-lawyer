@@ -16,8 +16,9 @@ How Kiro was used on Lease Lawyer: which Kiro features the repository uses, what
 ### Measured results of the Kiro sessions
 - **Facts read from an unseen lease** (written after the reader, with wording unlike the samples): 1 of 10 before session 1, 7 of 10 after it, 10 of 10 after session 2.
 - **Confident answers resting on a "silent" lease that was not silent:** 4 of 8 topics before session 1, 0 after session 2, on that lease and on a second unseen lease.
+- **Reproduce:** both leases and an answer key are in `tests/holdout/`; `npm run eval` scores the first commit and today's code on them (lease A: 1 of 10 facts and 4 of 8 falsely silent answers, then 10 of 10 and 0).
 - **Unit tests:** 92 before session 1, 180 after it, 198 after session 2. Playwright 7 before, 8 after.
-- **Today:** 238 unit tests and 26 Playwright tests pass from a clean clone. The 40 unit and 18 end-to-end tests added since session 2 came with the work built outside Kiro, listed in [Who built what](#who-built-what).
+- **When this table was added:** 238 unit tests and 26 Playwright tests passed from a clean clone. The 40 unit and 18 end-to-end tests added after session 2 came with the work built outside Kiro, listed in [Who built what](#who-built-what).
 
 ## Timeline
 - **2026-11-18.** Steering, the first spec and the hooks drafted in Kiro's formats; the first version of the app built against the spec task by task.
