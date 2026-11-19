@@ -5,6 +5,7 @@ Notable changes to Lease Lawyer. The Kiro sessions and what they changed are rec
 ## Unreleased
 
 ### Added
+- A second Kiro spec, `.kiro/specs/pdf-reader/`, headed "documented after the build": requirements, design and tasks for PDF upload, written from the shipped code and tests. Three untested criteria are open tasks.
 - Continuous integration (`.github/workflows/ci.yml`): type check, unit tests, the holdout eval and the Playwright suite on every push and pull request, with a README badge.
 - A unit test for every Kiro spec's `tasks.md`: each cited requirement exists, and no task is checked while one of its sub-tasks is open.
 - `npm run eval`: scores the reader and prover on the two unseen leases in `tests/holdout/` against an answer key, beside the first version rebuilt from git history, and prints facts read, facts kept that the lease does not state, Yes or No answers resting on a false "silent", and "Can't tell" answers. A unit test pins today's numbers.
