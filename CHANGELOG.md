@@ -5,6 +5,7 @@ Notable changes to Lease Lawyer. The Kiro sessions and what they changed are rec
 ## Unreleased
 
 ### Added
+- `npm run smoke:bedrock`: the first live check of the Bedrock reader. Without `--yes` it prints the plan and a cost estimate and sends nothing; with it, it reads the four samples and two holdout leases, verifies each proposed fact, scores the holdouts with the eval scorer, prices each call from its token usage, stops before a spending cap, and writes labelled readings and a summary to `docs/bedrock-smoke/`. The Bedrock adapter now reports the model and token usage of each reading, and accepts a named AWS profile for local tools.
 - A second Kiro spec, `.kiro/specs/pdf-reader/`, headed "documented after the build": requirements, design and tasks for PDF upload, written from the shipped code and tests. Three untested criteria are open tasks.
 - Continuous integration (`.github/workflows/ci.yml`): type check, unit tests, the holdout eval and the Playwright suite on every push and pull request, with a README badge.
 - A unit test for every Kiro spec's `tasks.md`: each cited requirement exists, and no task is checked while one of its sub-tasks is open.

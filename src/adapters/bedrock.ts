@@ -1,7 +1,7 @@
 import { AnthropicBedrockMantle } from '@anthropic-ai/bedrock-sdk';
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { clauseText } from '../lease/parse';
-import type { ParsedLease } from '../lease/types';
+import type { CandidateFact, ParsedLease } from '../lease/types';
 import type { LeaseReader, QuestionTranslator } from './types';
 import { ReadLeaseResponseSchema, TranslationSchema, tenantFactsPrompt, topicsPrompt, vocabularyPrompt } from './schemas';
 
@@ -11,13 +11,14 @@ import { ReadLeaseResponseSchema, TranslationSchema, tenantFactsPrompt, topicsPr
  * so AWS credentials stay on the server. Output is constrained by structured
  * outputs, then validated and verified like any other reader's.
  */
-export interface BedrockConfig {
+export type BedrockConfig = {
   region: string;
-  accessKeyId: string;
-  secretAccessKey: string;
-  sessionToken?: string;
   model?: string;
-}
+} & (
+  | { accessKeyId: string; secretAccessKey: string; sessionToken?: string; profile?: undefined }
+  /** A named AWS profile, for local tools such as the smoke run. The Pages Functions use keys. */
+  | { profile: string; accessKeyId?: undefined; secretAccessKey?: undefined; sessionToken?: undefined }
+);
 
 /**
  * Bedrock model IDs are the Anthropic model ID with an `anthropic.` prefix, and
@@ -28,6 +29,7 @@ export interface BedrockConfig {
 export const DEFAULT_BEDROCK_MODEL = 'anthropic.claude-opus-5-5';
 
 function client(config: BedrockConfig) {
+  if (config.profile) return new AnthropicBedrockMantle({ awsRegion: config.region, awsProfile: config.profile });
   return new AnthropicBedrockMantle({
     awsRegion: config.region,
     awsAccessKey: config.accessKeyId,
@@ -49,20 +51,40 @@ function leaseForPrompt(lease: ParsedLease): string {
   return lease.clauses.map((c) => `<clause id="${c.id}">\n${clauseText(lease, c)}\n</clause>`).join('\n');
 }
 
-export function bedrockLeaseReader(config: BedrockConfig): LeaseReader {
+/** One Bedrock reading of a lease: the proposed facts plus what the call used, for the smoke run's cost report. */
+export interface BedrockReading {
+  facts: CandidateFact[];
+  model: string;
+  usage: { inputTokens: number; outputTokens: number };
+}
+
+/** Builds a reader for `config` that also reports the model and token usage of each call. */
+export function bedrockReadingFn(config: BedrockConfig): (lease: ParsedLease) => Promise<BedrockReading> {
   const anthropic = client(config);
+  const model = config.model ?? DEFAULT_BEDROCK_MODEL;
+  return async (lease) => {
+    const response = await anthropic.messages.parse({
+      model,
+      max_tokens: 16000,
+      system: READER_SYSTEM,
+      output_config: { effort: 'medium', format: zodOutputFormat(ReadLeaseResponseSchema) },
+      messages: [{ role: 'user', content: `Lease "${lease.name}":\n${leaseForPrompt(lease)}` }],
+    });
+    if (response.stop_reason === 'refusal') throw new Error('the model declined to read this lease');
+    return {
+      facts: response.parsed_output?.facts ?? [],
+      model: response.model ?? model,
+      usage: { inputTokens: response.usage.input_tokens, outputTokens: response.usage.output_tokens },
+    };
+  };
+}
+
+export function bedrockLeaseReader(config: BedrockConfig): LeaseReader {
+  const read = bedrockReadingFn(config);
   return {
     name: 'Claude on Amazon Bedrock',
     async read(lease) {
-      const response = await anthropic.messages.parse({
-        model: config.model ?? DEFAULT_BEDROCK_MODEL,
-        max_tokens: 16000,
-        system: READER_SYSTEM,
-        output_config: { effort: 'medium', format: zodOutputFormat(ReadLeaseResponseSchema) },
-        messages: [{ role: 'user', content: `Lease "${lease.name}":\n${leaseForPrompt(lease)}` }],
-      });
-      if (response.stop_reason === 'refusal') throw new Error('the model declined to read this lease');
-      return response.parsed_output?.facts ?? [];
+      return (await read(lease)).facts;
     },
   };
 }

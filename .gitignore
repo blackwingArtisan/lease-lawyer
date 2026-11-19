@@ -10,3 +10,4 @@ playwright-report/
 .DS_Store
 tools/mcp-prover/dist/
 .eval-cache/
+tools/smoke-bedrock/dist/
