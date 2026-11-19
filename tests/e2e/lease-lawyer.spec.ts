@@ -91,4 +91,36 @@ test.describe('Lease Lawyer', () => {
     await page.getByRole('tab', { name: 'Rule book' }).click();
     await expect(page.getByTestId('rulebase')).toContainText('rule(mj_3_4, wear_not_deductible, true).');
   });
+
+  test('says "can\'t tell" when a pets clause cannot be read, instead of calling the lease silent', async ({ page }) => {
+    await page.getByRole('button', { name: 'Paste text' }).click();
+    await page.locator('#paste-text').fill(
+      [
+        'RESIDENTIAL LEASE',
+        'Brackenridge Row',
+        '',
+        '1. PARTIES. This Lease is between Thistledown Rentals LLC, the Owner, and Alex Marlow, the Resident.',
+        '',
+        '2. RENT. Rent is $1,300.00 monthly.',
+        '',
+        '3. ANIMALS. Regarding animals, see Rider B attached to this Lease.',
+      ].join('\n'),
+    );
+    await page.getByRole('button', { name: 'Read this lease' }).click();
+    await expect(page.getByTestId('lease')).toContainText('Brackenridge Row');
+    await expect(page.getByTestId('fact-count')).toHaveText('1 facts extracted');
+
+    await page.getByTestId('question').fill('Can I keep a cat?');
+    await page.getByTestId('ask').click();
+
+    await expect(page.getByTestId('verdict')).toHaveAttribute('data-verdict', 'unknown');
+    await expect(page.getByTestId('headline')).toContainText("Can't tell. Section 3 (ANIMALS) mentions pets");
+    await expect(page.getByTestId('result')).not.toContainText('says nothing about pets');
+
+    await expect(page.getByTestId('prolog-facts')).toContainText('unread(pet_policy, s3).');
+
+    // The unread section is listed and the button moves focus to the clause.
+    await page.getByTestId('show-unread').click();
+    await expect(page.locator('#clause-s3')).toBeFocused();
+  });
 });

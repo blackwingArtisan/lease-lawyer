@@ -7,12 +7,14 @@ interface Props {
   tenant: TenantAnswer[];
   busy: boolean;
   onFollowUp: (name: string, value: boolean) => void;
+  /** Scroll to a lease section and move focus to it. */
+  onShowClause: (clauseId: string) => void;
 }
 
 const STAMP = { yes: 'Yes', no: 'No', unknown: 'Unproven' } as const;
 
 /** The verdict stamp, the one-line answer, and, when the proof is open, what it still needs. */
-export function VerdictPanel({ answer, question, tenant, busy, onFollowUp }: Props) {
+export function VerdictPanel({ answer, question, tenant, busy, onFollowUp, onShowClause }: Props) {
   const answered = new Map(tenant.map((t) => [t.name, t.value]));
   const tenantMissing = answer.missing.filter((m) => m.kind === 'tenant');
   const leaseMissing = answer.missing.filter((m) => m.kind === 'lease');
@@ -30,6 +32,22 @@ export function VerdictPanel({ answer, question, tenant, busy, onFollowUp }: Pro
           {answer.headline}
         </p>
       </div>
+
+      {answer.unread.length > 0 && (
+        <div className="followups" data-testid="unread">
+          <p className="followups-title">The reader could not read:</p>
+          <ul className="unread-list">
+            {answer.unread.map((u) => (
+              <li key={u.clauseId}>
+                <button type="button" className="linkish" data-testid="show-unread" onClick={() => onShowClause(u.clauseId)}>
+                  Section {u.number} ({u.title})
+                </button>{' '}
+                mentions {u.subjects.join(' and ')}.
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {tenantMissing.length > 0 && (
         <div className="followups" data-testid="followups">

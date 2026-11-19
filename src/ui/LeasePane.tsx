@@ -7,7 +7,8 @@ interface Props {
   lease: ParsedLease;
   facts: LeaseFact[];
   cited: ReadonlySet<string>;
-  focus: { id: string; nonce: number } | null;
+  /** A fact id, or a clause id when `clause` is set. */
+  focus: { id: string; nonce: number; clause?: boolean } | null;
 }
 
 /** The lease as a parchment document. Extracted facts are underlined; cited ones glow. */
@@ -21,7 +22,7 @@ export function LeasePane({ lease, facts, cited, focus }: Props) {
 
   useEffect(() => {
     if (!focus || !scroller.current) return;
-    const el = scroller.current.querySelector<HTMLElement>(`[data-fact~="${focus.id}"]`);
+    const el = scroller.current.querySelector<HTMLElement>(focus.clause ? `[data-clause="${focus.id}"]` : `[data-fact~="${focus.id}"]`);
     if (!el) return;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     el.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' });
@@ -48,7 +49,7 @@ export function LeasePane({ lease, facts, cited, focus }: Props) {
         <p className="lease-warning">No numbered sections were found, so nothing could be cited. Number each section like &ldquo;4. RENT.&rdquo;</p>
       )}
       {lease.clauses.map((clause) => (
-        <p key={clause.id} id={`clause-${clause.id}`} className="clause" data-clause={clause.id}>
+        <p key={clause.id} id={`clause-${clause.id}`} className="clause" data-clause={clause.id} tabIndex={-1}>
           {clauseSegments(lease, clause, facts, cited).map((seg) =>
             seg.factIds.length === 0 ? (
               <span key={seg.start}>{seg.text}</span>

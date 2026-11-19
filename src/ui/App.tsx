@@ -18,7 +18,7 @@ export function App() {
   const { state, loadLease, askQuestion, answerFollowUp } = useLeaseLawyer(adapters);
   const [draft, setDraft] = useState('');
   const [sourceId, setSourceId] = useState<string | null>(null);
-  const [focusFact, setFocusFact] = useState<{ id: string; nonce: number } | null>(null);
+  const [focusFact, setFocusFact] = useState<{ id: string; nonce: number; clause?: boolean } | null>(null);
   const resultRef = useRef<HTMLElement>(null);
 
   const pick = (source: LeaseSource) => {
@@ -154,7 +154,14 @@ export function App() {
               )}
               {state.answer && (
                 <>
-                  <VerdictPanel answer={state.answer} question={state.question} onFollowUp={answerFollowUp} tenant={state.tenant} busy={busy} />
+                  <VerdictPanel
+                    answer={state.answer}
+                    question={state.question}
+                    onFollowUp={answerFollowUp}
+                    onShowClause={(clauseId) => setFocusFact({ id: clauseId, nonce: Date.now(), clause: true })}
+                    tenant={state.tenant}
+                    busy={busy}
+                  />
                   {state.answer.steps.length > 0 && (
                     <ProofChain
                       key={`${state.answer.query}:${state.answer.proofTerm ?? ''}`}

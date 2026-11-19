@@ -1,0 +1,17 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Extraction guard",
+      "description": "When the agent edits the lease extractor or the coverage check, restate that every quote stays verbatim and that an unreadable clause gives \"can't tell\", never \"silent\", and ask for an extraction test.",
+      "trigger": "PostFileSave",
+      "matcher": "^src/lease/(?:extract|coverage)\\.ts$",
+      "action": {
+        "type": "agent",
+        "prompt": "You just edited the lease extractor or the coverage check (src/lease/extract.ts or src/lease/coverage.ts). Before continuing: every fact's quote must be the exact sentence from the clause it cites, so verifyFacts still keeps it; when a sentence is ambiguous, propose no fact rather than guess; a clause that has a predicate's cue words but no verified fact for it must be recorded as unread, so the answer is \"Can't tell\" and never \"the lease says nothing\"; and the three sample leases must still produce no unread entries and exactly the fact lists in tests/unit/extract.test.ts. Add or update an extraction test in tests/unit/extract.test.ts for each wording you add or change, and a test in tests/unit/coverage.test.ts for each cue change. Then run `npm test` and fix the code, not the test, unless .kiro/specs/proof-chain-answers/requirements.md says the test is wrong."
+      },
+      "timeout": 300,
+      "enabled": true
+    }
+  ]
+}

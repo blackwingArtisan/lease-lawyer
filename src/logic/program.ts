@@ -1,6 +1,6 @@
 import prover from './prover.pl?raw';
 import rulebase from './rulebase.pl?raw';
-import type { FactArg, LeaseFact } from '../lease/types';
+import type { FactArg, LeaseFact, UnreadClause } from '../lease/types';
 
 export const PROVER_SOURCE = prover;
 export const RULEBASE_SOURCE = rulebase;
@@ -28,9 +28,15 @@ export function factTerm(predicate: string, args: FactArg[]): string {
   return args.length === 0 ? predicate : `${predicate}(${args.map(arg).join(', ')})`;
 }
 
+/** The Prolog line that marks a predicate as unread in a clause. */
+export function unreadTerm(u: Pick<UnreadClause, 'predicate' | 'clauseId'>): string {
+  return `unread(${arg(u.predicate)}, ${arg(u.clauseId)}).`;
+}
+
 /** The Prolog clauses for one lease and one tenant. Only verified facts reach this point. */
-export function factsProgram(facts: LeaseFact[], tenant: TenantAnswer[]): string {
+export function factsProgram(facts: LeaseFact[], tenant: TenantAnswer[], unread: readonly UnreadClause[] = []): string {
   const lines = facts.map((f) => `lease_fact(${factTerm(f.predicate, f.args)}, ${arg(f.id)}).`);
+  for (const u of unread) lines.push(unreadTerm(u));
   for (const t of tenant) {
     lines.push(`tenant_fact(${arg(t.name)}, ${t.value ? 'yes' : 'no'}, ${t.source}).`);
   }

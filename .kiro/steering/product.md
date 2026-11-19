@@ -14,6 +14,7 @@ Renters reading a lease they did not write, and the tenant-union volunteers and 
 - **Every step cites its source.** A lease step quotes the exact clause text and links to it. A law step names the model-code section. A tenant step says "from your question" or "from your answer".
 - **Unknown says what is missing.** When neither answer is provable, the app names the fact it needs and offers it as a Yes/No question, then finishes the proof.
 - **Nothing invented.** A fact read from the lease (by rules or by an AI model) is kept only if its quote appears verbatim in the clause it cites.
+- **Unreadable is not silent.** No reader reads every lease. When a clause has a topic's cue words (pet, animal, sublet, enter, late fee, deposit and so on) but no fact was read from it, the engine will not treat the lease as silent on that topic. The answer is "Can't tell", names the section, and links to it.
 - **Not legal advice.** The rule base is an invented "model jurisdiction". The footer says so on every page.
 
 ## The Frankenstein stitch

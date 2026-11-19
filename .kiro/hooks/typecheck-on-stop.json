@@ -5,8 +5,12 @@
       "name": "Typecheck on stop",
       "description": "Type-checks the whole project, including the Bedrock adapter and the Pages Functions that tests never execute, when the agent finishes a turn.",
       "trigger": "Stop",
-      "action": { "type": "command", "command": "npm run typecheck" },
-      "timeout": 180
+      "action": {
+        "type": "command",
+        "command": "npm run typecheck"
+      },
+      "timeout": 180,
+      "enabled": true
     }
   ]
 }

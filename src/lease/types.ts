@@ -49,7 +49,21 @@ export interface RejectedFact {
   reason: string;
 }
 
+/**
+ * A clause that has a predicate's cue words but yielded no verified fact for
+ * that predicate. The engine will not treat the lease as silent about it.
+ */
+export interface UnreadClause {
+  predicate: string;
+  clauseId: string;
+  /** Section number and heading as printed, for messages. */
+  number: number;
+  title: string;
+}
+
 export interface VerificationResult {
   facts: LeaseFact[];
   rejected: RejectedFact[];
+  /** Set by the coverage check after verification, for every reader. */
+  unread: UnreadClause[];
 }

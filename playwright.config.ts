@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const PORT = 3162;
+// Override with PW_PORT when 3162 is taken by another local server.
+const PORT = Number(process.env.PW_PORT ?? 3162);
 
 export default defineConfig({
   testDir: 'tests/e2e',

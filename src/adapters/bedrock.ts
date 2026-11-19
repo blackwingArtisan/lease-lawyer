@@ -36,9 +36,9 @@ function client(config: BedrockConfig) {
   });
 }
 
-const READER_SYSTEM = `You convert residential lease clauses into facts for a Prolog rule engine.
+export const READER_SYSTEM = `You convert residential lease clauses into facts for a Prolog rule engine.
 Use only the predicates listed below, with arguments of the listed kinds. Money is a plain number of dollars, counts are whole numbers.
-Emit a fact only when a clause states it outright. If a clause is silent, emit nothing for it; the engine treats silence on its own.
+Emit a fact only when a clause states it outright. If a clause is silent, emit nothing for it. If a clause mentions a topic but you cannot express what it says as one of these facts, emit nothing and do not guess: a coverage check flags the clause so the renter reads it themselves.
 For every fact, copy into "quote" the exact sentence from that clause that supports it, character for character, and give the clause id.
 Facts whose quote is not found verbatim in the clause are discarded automatically.
 

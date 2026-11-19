@@ -3,13 +3,15 @@
   "hooks": [
     {
       "name": "Rule base guard",
-      "description": "When the agent edits the Prolog rule base or prover, restate the rules that keep every answer provable and cited, and ask for the matching tests before it continues.",
+      "description": "When the agent edits the Prolog rule base, the prover or the rule text, restate the rules that keep every answer provable and cited, and ask for the matching tests before it continues.",
       "trigger": "PostFileSave",
-      "matcher": "^src/logic/(rulebase|prover)\\.pl$",
+      "matcher": "^src/logic/(?:(?:rulebase|prover)\\.pl|rules\\.ts)$",
       "action": {
         "type": "agent",
-        "prompt": "You just edited the Prolog rule base or prover. Before continuing: give every new rule id plain-English text in src/logic/rules.ts (with an answer sentence if its head is verdict/2); make sure no topic can prove both yes and no; keep lease facts closed-world (absent/1 only when no clause states the fact); and add a row to the matrix in tests/unit/rulebase.test.ts for each new verdict rule. Then run `npm test`."
-      }
+        "prompt": "You just edited the Prolog rule base, the prover or the rule text (src/logic/rulebase.pl, prover.pl or rules.ts). Before continuing: give every rule id in rulebase.pl plain-English text in src/logic/rules.ts, with an answer sentence if its head is verdict/2, and remove text for ids that no longer exist; make sure no topic can prove both yes and no; keep lease facts closed-world (absent/1 only when no clause states the fact, and never for a predicate that has an unread/2 entry, in any prover mode); and add a row to the matrix in tests/unit/rulebase.test.ts for each new verdict rule. Then run `npm test` and fix the code, not the test, unless .kiro/specs/proof-chain-answers/requirements.md says the test is wrong."
+      },
+      "timeout": 300,
+      "enabled": true
     }
   ]
 }

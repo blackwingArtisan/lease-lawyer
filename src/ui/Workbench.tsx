@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { VerificationResult } from '../lease/types';
 import type { Answer } from '../logic/ask';
-import { RULEBASE_SOURCE, factTerm } from '../logic/program';
+import { RULEBASE_SOURCE, factTerm, unreadTerm } from '../logic/program';
 
 interface Props {
   verification: VerificationResult | null;
@@ -60,11 +60,18 @@ export function Workbench({ verification, answer, readerName, translatorName }: 
             </p>
             <pre className="code" data-testid="prolog-facts">
               {verification
-                ? verification.facts
-                    .map((f) => `lease_fact(${factTerm(f.predicate, f.args)}, ${f.id}).  % ${f.clauseId.replace(/^s/, '§')}`)
-                    .join('\n') || '% No facts found in this lease.'
+                ? [
+                    ...verification.facts.map((f) => `lease_fact(${factTerm(f.predicate, f.args)}, ${f.id}).  % ${f.clauseId.replace(/^s/, '§')}`),
+                    ...verification.unread.map((u) => `${unreadTerm(u)}  % ${u.clauseId.replace(/^s/, '§')} mentions it; no fact was read`),
+                  ].join('\n') || '% No facts found in this lease.'
                 : '% Reading…'}
             </pre>
+            {verification && verification.unread.length > 0 && (
+              <p className="panel-note">
+                <code>unread/2</code> marks a section that mentions a topic but gave the engine no fact. The engine will not call the lease silent
+                about that topic.
+              </p>
+            )}
             {verification && verification.rejected.length > 0 && (
               <>
                 <p className="panel-note">Rejected by the verifier:</p>
@@ -105,7 +112,9 @@ export function Workbench({ verification, answer, readerName, translatorName }: 
             </li>
             <li>
               <strong>Verify.</strong> Every proposed fact must quote its clause word for word, use a known predicate and carry
-              well-typed arguments. Anything else is thrown out, so a model cannot slip in a fact the lease does not say.
+              well-typed arguments. Anything else is thrown out, so a model cannot slip in a fact the lease does not say. A coverage check
+              then flags any section that mentions a topic (pets, subletting, entry, fees) but gave no fact, so a missed fact never
+              passes for silence.
             </li>
             <li>
               <strong>Prove.</strong> Tau Prolog runs a meta-interpreter over the model-code rule base. It returns the proof tree

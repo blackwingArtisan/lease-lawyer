@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { onRequestPost as readLease } from '../../functions/api/read-lease';
 import { onRequestPost as translate } from '../../functions/api/translate';
 import { bedrockConfig } from '../../functions/api/_env';
+import { READER_SYSTEM } from '../../src/adapters/bedrock';
 import { localLeaseReader, localQuestionTranslator } from '../../src/adapters/local';
 import { remoteLeaseReader, remoteQuestionTranslator } from '../../src/adapters/remote';
 import { TranslationSchema, vocabularyPrompt } from '../../src/adapters/schemas';
@@ -92,6 +93,7 @@ describe('API functions without credentials', () => {
 describe('model prompts', () => {
   it('lists every predicate with its allowed values', () => {
     expect(vocabularyPrompt()).toContain('pet_policy(one of prohibited|allowed|consent_required)');
+    expect(READER_SYSTEM).toContain('do not guess');
     expect(TranslationSchema.safeParse({ topic: null, tenant: [] }).success).toBe(true);
   });
 });

@@ -78,7 +78,7 @@ export function useLeaseLawyer(adapters: Adapters) {
       const id = ++run.current;
       setStatus('thinking');
       try {
-        const result = await ask({ topic: topicId, facts: verification.facts, tenant: tenantFacts });
+        const result = await ask({ topic: topicId, facts: verification.facts, tenant: tenantFacts, unread: verification.unread });
         if (id !== run.current) return;
         setAnswer(result);
         setStatus('ready');

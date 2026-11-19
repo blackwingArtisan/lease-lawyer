@@ -9,7 +9,8 @@ Renters reading a lease they did not write, and the tenant-union volunteers and 
 
 ## What works today
 - **Three sample leases and your own.** Pick a fictional sample (careful, greedy, thin) or upload or paste a plain-text lease with numbered sections.
-- **Facts read from the lease, never invented.** A rule-based reader turns clauses into typed facts such as `late_fee(75)` and `early_termination_option(job_relocation, 60, 1)`. Each fact keeps the exact sentence it came from, and a verifier drops any fact whose quote is not in the clause it cites. Kept quotes are highlighted in the lease.
+- **Facts read from the lease, never invented.** A rule-based reader turns clauses into typed facts such as `late_fee(75)` and `early_termination_option(job_relocation, 60, 1)`. It reads ordinary lease wording, not only the samples: Tenant, Lessee, Resident or Occupant; Landlord, Lessor, Owner or Management; "No animals of any kind"; "upon one day's notice"; "may end this Lease before it expires"; "rent will increase three percent (3%)"; a LENGTH OF LEASE heading with dates. When a sentence is ambiguous it proposes nothing. Each fact keeps the exact sentence it came from, and a verifier drops any fact whose quote is not in the clause it cites. Kept quotes are highlighted in the lease.
+- **"Can't tell" instead of a wrong "silent".** No reader reads every lease. A coverage check, run for both the local and the Bedrock reader, looks for clauses that mention a topic (pet, animal, sublet, assign, enter, access, late fee, deposit and so on) but yielded no fact. The prover then refuses to treat the lease as silent on that topic. A lease section like "6. ANIMALS. Regarding animals, see Rider B." answers a pets question with "Can't tell. Section 6 (ANIMALS) mentions pets, but the reader could not read what it says...", plus a button that jumps to the section.
 - **Answers by proof.** Tau Prolog runs a proof-producing meta-interpreter over a rule base for an invented "model jurisdiction": eight topics (deposit and wear and tear, leaving early, pets and assistance animals, landlord entry, late fees, subletting, repair and deduct, rent increases) in 55 rules, including a rule that voids lease terms waiving tenant protections.
 - **A proof chain you can click.** Each step is numbered, says which earlier steps it uses, and cites a lease section (with the quote), a model-code section, an arithmetic check, or your own answer. Clicking a lease step scrolls to the clause and lights up the quote.
 - **Unknown means "here is what I need".** When neither Yes nor No is provable, the engine searches for the smallest sets of facts that would finish the proof, asks for them as Yes/No questions, and shows which answers lead where. Answer, and the proof completes with your answer cited.
@@ -41,7 +42,7 @@ npx playwright install chromium       # first time only
 npm run test:e2e                      # Playwright against the production build, port 3162
 ```
 
-The unit tests cover the parser, the extractor on each sample lease, every verifier rejection, Prolog injection safety, the question classifier, a 33-case verdict matrix across all leases and topics, boundary cases, a sweep proving no topic ever proves both Yes and No, rule text kept in sync with the Prolog rule base, proof step order and citations, highlighting, unknown handling, and the adapters with `fetch` stubbed. The end-to-end tests pick or upload a lease, ask a question, and check that the proof chain cites the right clause, on desktop and at phone width. No test makes a network call.
+The unit tests cover the parser, the extractor on each sample lease and on two invented leases and a table of one-sentence wordings, the coverage check (flagged and not flagged clauses, `absent/1` failing for an unread predicate, `ask()` answering "Can't tell" for pets, subletting and entry), every verifier rejection, Prolog injection safety, the question classifier, a 33-case verdict matrix across all leases and topics, boundary cases, a sweep proving no topic ever proves both Yes and No, rule text kept in sync with the Prolog rule base, proof step order and citations, highlighting, unknown handling, and the adapters with `fetch` stubbed. The end-to-end tests pick, upload or paste a lease, ask a question, and check that the proof chain cites the right clause (or, for a pasted lease with an unreadable pets clause, that the answer is "Can't tell" and the section is focused), on desktop and at phone width. No test makes a network call.
 
 ## Architecture
 
@@ -49,15 +50,15 @@ The unit tests cover the parser, the extractor on each sample lease, every verif
 lease text ─▶ parseLease ─▶ clauses
                  └─▶ LeaseReader (local rules | Claude on Bedrock) ─▶ candidate facts ─▶ verifyFacts ─▶ facts + quote offsets
 question ───▶ QuestionTranslator (local classifier | Claude on Bedrock) ─▶ topic + tenant facts
-facts + tenant facts ─▶ Tau Prolog: prover.pl + rulebase.pl
+facts + unread clauses + tenant facts ─▶ Tau Prolog: prover.pl + rulebase.pl
        strict_proof(Topic, yes|no, Proof) ─▶ proof tree ─▶ numbered, cited steps ─▶ UI
        assumption_sets(Topic, V, tenant|lease, Sets) ─▶ missing facts + follow-up questions
 ```
 
 | Path | What it holds |
 |---|---|
-| `src/lease/` | parser, extractor, verifier, fact vocabulary, sample leases |
-| `src/logic/prover.pl` | meta-interpreter: proof terms, closed-world `absent/1`, abduction modes |
+| `src/lease/` | parser, extractor, verifier, coverage check, fact vocabulary, sample leases |
+| `src/logic/prover.pl` | meta-interpreter: proof terms, closed-world `absent/1` (blocked for unread predicates), abduction modes |
 | `src/logic/rulebase.pl` | the model-jurisdiction rules as `rule(Id, Head, Body)` |
 | `src/logic/` | Tau Prolog session, `ask()`, proof tree to steps, rule text |
 | `src/question/` | keyword classifier |
@@ -83,7 +84,7 @@ Target: Cloudflare Pages (free tier). Build command `npm run build`, output dire
 Kiro's spec-driven workflow shaped this project:
 - `.kiro/steering/`: product promise, tech rules and structure, included in every Kiro session.
 - `.kiro/specs/proof-chain-answers/`: requirements in EARS form, the design, and the task list, each task mapped to requirement numbers.
-- `.kiro/hooks/`: agent hooks (`*.json`) that run the unit tests when source or Prolog files are saved, guard the rule base (rule text, no yes/no conflicts, matrix rows), and type-check on stop, plus an IDE-format hook (`rulebase-guard.kiro.hook`) that asks the agent to keep the rule base proven and tested whenever a Prolog or rule-text file is edited.
+- `.kiro/hooks/`: hooks in the current `version: "v1"` JSON format. `test-on-save.json` runs the unit tests when source or Prolog files are saved, `rulebase-guard.json` guards the rule base and rule text (rule text, no yes/no conflicts, closed-world absence, matrix rows), `extraction-guard.json` guards the extractor and coverage check (verbatim quotes, "can't tell" for unreadable clauses, an extraction test), and `typecheck-on-stop.json` type-checks when the agent stops.
 
 See [KIRO-LOG.md](KIRO-LOG.md) for what was written before the Kiro pass and what Kiro did.
 
