@@ -5,6 +5,7 @@ Notable changes to Lease Lawyer. The Kiro sessions and what they changed are rec
 ## Unreleased
 
 ### Added
+- README media: a GIF of the first-visit tour and three stills (a proved No, a Can't tell, the phone layout), regenerated with `npm run media` against a running build.
 - Phone flow: case files swipe sideways in their own row, the lease folds under a "Read the lease (13 facts)" button and opens itself when a proof step points into it, and a floating "Back to the answer" button returns to the verdict.
 - PDF upload. The text layer is read in the browser with pdf.js (loaded only when a PDF is chosen), wrapped lines are reflowed into whole sentences so quotes stay verbatim, and scans, damaged files and very long documents are refused with a reason. A sample lease PDF can be downloaded from the "Your own" card; it reads to exactly the same facts as its text version.
 - `ask()` takes an optional rule base, the hook a per-state rule pack will use.

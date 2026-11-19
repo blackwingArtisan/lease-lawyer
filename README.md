@@ -4,6 +4,12 @@
 
 Ask a plain question ("Can my landlord keep my deposit for normal wear and tear?") and get Yes, No, or Can't tell. A Yes or No comes with a proof you can check: a 1970s logic engine works it out step by step, and every step quotes the exact clause it rests on. When the lease points somewhere the reader cannot follow, the answer is "Can't tell", with the section to read yourself.
 
+![The 30-second tour: a No proved from the lease, each step sewn to the clause it quotes, then a Can't tell on a lease built to force a guess](docs/media/tour.gif)
+
+| A proved No, every step quoting the lease | "Can't tell" when a clause points elsewhere | On a phone |
+| --- | --- | --- |
+| ![Gaslight Row: No, with the proof chain and the cited clause lit](docs/media/verdict-no.png) | ![Hollowmere Flats: Can't tell, with the unreadable clauses outlined](docs/media/cant-tell.png) | ![The same No at phone width](docs/media/phone.png) |
+
 A Kiroween 2026 entry in the **Frankenstein** category: Prolog, the logic language of 1972, stitched to a modern language model. The model reads; Prolog decides.
 
 ## Try it in 30 seconds
