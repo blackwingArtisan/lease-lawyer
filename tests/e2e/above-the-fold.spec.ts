@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 
 // The demo path: open the page, pick the greedy lease, tap one topic. The topic chips must be
 // reachable without scrolling, and the verdict stamp must land in view without the visitor scrolling.

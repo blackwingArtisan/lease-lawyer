@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 
 test('works at phone width without horizontal scrolling', async ({ page }) => {
   await page.goto('/');

@@ -9,6 +9,7 @@ import { CaseFiles } from './CaseFiles';
 import { LeasePane } from './LeasePane';
 import { ProofChain } from './ProofChain';
 import { Seam } from './Seam';
+import { useTour } from './useTour';
 import { VerdictPanel } from './VerdictPanel';
 import { Workbench } from './Workbench';
 
@@ -63,6 +64,13 @@ export function App() {
     result.focus({ preventScroll: true });
   }, [state.answer, state.outOfScope, state.error, busy]);
 
+  const tour = useTour({
+    state,
+    pick,
+    submit,
+    showFact: (factId) => setFocusFact({ id: factId, nonce: Date.now() }),
+  });
+
   return (
     <div className="page">
       <div className="fog" aria-hidden="true" />
@@ -78,6 +86,9 @@ export function App() {
             <strong>Chatbots guess about your lease. Lease Lawyer proves it, or says it can&rsquo;t tell.</strong> Every answer is a
             Prolog proof, and every step cites the words in your lease.
           </p>
+          <button type="button" className="chip tour-chip" data-testid="tour-start" data-tour-ui onClick={() => void tour.start()}>
+            <span aria-hidden="true">&#x25B6;</span> {tour.seen ? 'Replay the 30-second tour' : 'Take the 30-second tour'}
+          </button>
         </div>
       </header>
 
@@ -222,6 +233,18 @@ export function App() {
           </section>
         </div>
       </main>
+
+      {tour.frame && (
+        <div className="tour" role="status" data-testid="tour" data-tour-ui>
+          <p className="tour-count">
+            Tour {tour.frame.n} of {tour.frame.total}
+          </p>
+          <p className="tour-caption">{tour.frame.caption}</p>
+          <button type="button" className="chip" onClick={tour.stop}>
+            Skip tour
+          </button>
+        </div>
+      )}
 
       <footer className="footer">
         <p>

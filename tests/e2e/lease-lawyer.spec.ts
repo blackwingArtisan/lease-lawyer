@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 import { fileURLToPath } from 'node:url';
 
 const customLease = fileURLToPath(new URL('./fixtures/maple-terrace.txt', import.meta.url));
