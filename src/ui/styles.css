@@ -1378,8 +1378,33 @@ mark.fact.flash {
   .page {
     padding: 0 16px 40px;
   }
+  /* Case files become a row you swipe through. */
   .case-grid {
-    grid-template-columns: minmax(0, 1fr);
+    display: flex;
+    gap: 10px;
+    margin: 0 -16px;
+    padding: 4px 16px 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 16px;
+  }
+  .case-grid > li {
+    flex: 0 0 74%;
+    scroll-snap-align: start;
+  }
+  .lease-toggle {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 9px 14px;
+    text-align: left;
+  }
+  .back-to-answer {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 6;
+    box-shadow: 0 10px 24px rgb(0 0 0 / 0.6);
   }
   .ask-row {
     flex-direction: column;

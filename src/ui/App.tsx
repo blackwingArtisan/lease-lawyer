@@ -10,6 +10,7 @@ import { LeasePane } from './LeasePane';
 import { ProofChain } from './ProofChain';
 import { Seam } from './Seam';
 import { Suture } from './Suture';
+import { useMediaQuery } from './useMediaQuery';
 import { useTour } from './useTour';
 import { VerdictPanel } from './VerdictPanel';
 import { Workbench } from './Workbench';
@@ -23,6 +24,23 @@ export function App() {
   const [sourceId, setSourceId] = useState<string | null>(null);
   const [focusFact, setFocusFact] = useState<{ id: string; nonce: number; clause?: boolean } | null>(null);
   const resultRef = useRef<HTMLElement>(null);
+  // On a phone the lease folds away under the answer's way, opens itself when a step points into it,
+  // and a floating button leads back to the answer.
+  const phone = useMediaQuery('(max-width: 560px)');
+  const [leaseOpen, setLeaseOpen] = useState(false);
+  const [backToAnswer, setBackToAnswer] = useState(false);
+  const showLease = !phone || leaseOpen;
+  useEffect(() => {
+    if (!focusFact || !phone) return;
+    setLeaseOpen(true);
+    setBackToAnswer(true);
+  }, [focusFact, phone]);
+  const returnToAnswer = () => {
+    setBackToAnswer(false);
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    resultRef.current?.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' });
+    resultRef.current?.focus({ preventScroll: true });
+  };
 
   const pick = (source: LeaseSource) => {
     setSourceId(source.id);
@@ -54,6 +72,7 @@ export function App() {
   const submit = (text: string) => {
     setDraft(text);
     setFocusFact(null);
+    setBackToAnswer(false);
     revealPending.current = true;
     void askQuestion(text);
   };
@@ -118,7 +137,19 @@ export function App() {
                 </span>
               )}
             </h2>
-            {state.lease ? (
+            {phone && state.lease && (
+              <button
+                type="button"
+                className="chip lease-toggle"
+                data-testid="lease-toggle"
+                aria-expanded={leaseOpen}
+                aria-controls="lease-text"
+                onClick={() => setLeaseOpen((o) => !o)}
+              >
+                {leaseOpen ? 'Hide the lease' : `Read the lease (${state.status === 'reading' ? 'reading…' : `${factCount} facts`})`}
+              </button>
+            )}
+            {!showLease ? null : state.lease ? (
               <LeasePane
                 lease={state.lease}
                 facts={state.verification?.facts ?? []}
@@ -247,6 +278,12 @@ export function App() {
       </main>
 
       <Suture factId={sewn} />
+
+      {phone && backToAnswer && (
+        <button type="button" className="lever small back-to-answer" data-testid="back-to-answer" onClick={returnToAnswer}>
+          <span aria-hidden="true">&uarr;</span> Back to the answer
+        </button>
+      )}
 
       {tour.frame && (
         <div className="tour" role="status" data-testid="tour" data-tour-ui>

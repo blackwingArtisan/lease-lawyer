@@ -67,7 +67,7 @@ export function LeasePane({ lease, facts, cited, unread, blocking, focus }: Prop
   const preamble = lease.clauses.length > 0 ? lease.text.slice(0, lease.clauses[0]!.start).trim() : lease.text.trim();
 
   return (
-    <div className="parchment" ref={scroller} data-testid="lease" tabIndex={0} aria-label={`Text of ${lease.name}`}>
+    <div className="parchment" id="lease-text" ref={scroller} data-testid="lease" tabIndex={0} aria-label={`Text of ${lease.name}`}>
       {preamble && (
         <header className="lease-head">
           {preamble.split('\n').map((line, i) => (
