@@ -5,6 +5,7 @@ Notable changes to Lease Lawyer. The Kiro sessions and what they changed are rec
 ## Unreleased
 
 ### Added
+- The suture: in the two-column layout, a sewn thread with cross-stitches runs from the quote in the lease to its Lease step in the proof chain. It starts on the clause the verdict turns on, follows the step you point at, focus or show, and redraws as the lease and the page scroll.
 - A 30-second tour that runs once on a first visit: the greedy lease is asked about its deposit and proved wrong in cited steps, the clause lights up, then the trick lease is asked about pets and answers "Can't tell". Captions explain each beat. Any click or key press hands control back, "Skip tour" ends it, and a "Replay the 30-second tour" chip in the masthead runs it again. Under reduced motion it never starts by itself. `?tour=on` forces it for recordings and `?tour=off` suppresses it.
 - The seam: every answer shows how it was made, sewn together in one strip. Reader (which reader, how many facts it proposed), Verifier (how many it kept word for word, how many it struck from the record, how many clauses were unreadable), Prolog (what it proved, in how many cited steps).
 - A bigger rubber stamp and one flash of lightning when a Yes or No lands. Both replay on every new answer and stay still under reduced motion.

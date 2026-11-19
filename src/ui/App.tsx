@@ -9,6 +9,7 @@ import { CaseFiles } from './CaseFiles';
 import { LeasePane } from './LeasePane';
 import { ProofChain } from './ProofChain';
 import { Seam } from './Seam';
+import { Suture } from './Suture';
 import { useTour } from './useTour';
 import { VerdictPanel } from './VerdictPanel';
 import { Workbench } from './Workbench';
@@ -38,6 +39,13 @@ export function App() {
 
   const cited = useMemo(() => citedFactIds(state.answer?.steps ?? []), [state.answer]);
   const blocking = useMemo(() => new Set((state.answer?.unread ?? []).map((u) => u.clauseId)), [state.answer]);
+  // The stitch starts on the last lease step of the proof (the clause the verdict turns on); pointing at another step moves it.
+  const [pointed, setPointed] = useState<string | null>(null);
+  const sewn = useMemo(() => {
+    const leaseSteps = (state.answer?.steps ?? []).filter((s) => s.kind === 'lease' && s.factId);
+    if (pointed && leaseSteps.some((s) => s.factId === pointed)) return pointed;
+    return leaseSteps[leaseSteps.length - 1]?.factId ?? null;
+  }, [state.answer, pointed]);
   const busy = state.status === 'reading' || state.status === 'thinking';
   const factCount = state.verification?.facts.length ?? 0;
 
@@ -205,7 +213,11 @@ export function App() {
                     <ProofChain
                       key={`${state.answer.query}:${state.answer.proofTerm ?? ''}`}
                       steps={state.answer.steps}
-                      onShowClause={(factId) => setFocusFact({ id: factId, nonce: Date.now() })}
+                      onShowClause={(factId) => {
+                        setPointed(factId);
+                        setFocusFact({ id: factId, nonce: Date.now() });
+                      }}
+                      onPoint={setPointed}
                     />
                   )}
                 </>
@@ -233,6 +245,8 @@ export function App() {
           </section>
         </div>
       </main>
+
+      <Suture factId={sewn} />
 
       {tour.frame && (
         <div className="tour" role="status" data-testid="tour" data-tour-ui>

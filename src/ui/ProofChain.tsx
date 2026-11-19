@@ -14,13 +14,15 @@ const KIND_LABEL: Record<StepKind, string> = {
 interface Props {
   steps: ProofStep[];
   onShowClause: (factId: string) => void;
+  /** Called when a Lease step is pointed at or focused, to sew it to its clause. */
+  onPoint?: (factId: string) => void;
 }
 
 /**
  * The proof as a chain of electrodes: evidence first, then each rule as it
  * fires, ending in the verdict. Lease steps link to the highlighted clause.
  */
-export function ProofChain({ steps, onShowClause }: Props) {
+export function ProofChain({ steps, onShowClause, onPoint }: Props) {
   return (
     <section className="chain-wrap" aria-labelledby="chain-heading">
       <h3 id="chain-heading" className="chain-title">
@@ -28,7 +30,16 @@ export function ProofChain({ steps, onShowClause }: Props) {
       </h3>
       <ol className="chain" data-testid="proof-chain" style={{ ['--steps' as string]: steps.length }}>
         {steps.map((s) => (
-          <li key={s.n} className={`step step-${s.kind}`} style={{ ['--i' as string]: s.n - 1 }} data-testid="proof-step" data-kind={s.kind}>
+          <li
+            key={s.n}
+            className={`step step-${s.kind}`}
+            style={{ ['--i' as string]: s.n - 1 }}
+            data-testid="proof-step"
+            data-kind={s.kind}
+            data-step-fact={s.kind === 'lease' ? s.factId : undefined}
+            onPointerEnter={s.kind === 'lease' && s.factId ? () => onPoint?.(s.factId!) : undefined}
+            onFocus={s.kind === 'lease' && s.factId ? () => onPoint?.(s.factId!) : undefined}
+          >
             <span className="electrode" aria-hidden="true">
               <span className="electrode-n">{s.n}</span>
             </span>

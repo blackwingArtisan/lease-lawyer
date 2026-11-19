@@ -747,6 +747,43 @@ mark.fact.flash {
   animation-delay: calc(var(--steps, 0) * var(--step-delay));
 }
 
+/* The suture: a sewn thread from a Lease step to its quote. Ticks across the thread are the cross-stitches. */
+.suture {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.suture path {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.suture-stitch {
+  stroke: #c9a14a;
+  stroke-width: 10;
+  stroke-dasharray: 2 13;
+  opacity: 0.85;
+}
+
+.suture-thread {
+  stroke: var(--volt);
+  stroke-width: 2;
+  stroke-dasharray: 9 6;
+  filter: drop-shadow(0 0 4px var(--volt-glow));
+  animation: suture-sew 0.9s ease-out both;
+}
+
+.suture-knot {
+  fill: var(--volt);
+  stroke: #2a1c10;
+  stroke-width: 1.5;
+}
+
 /* The seam: reader, verifier and Prolog, sewn together. */
 .seam {
   display: grid;
@@ -1240,6 +1277,17 @@ mark.fact.flash {
   }
   100% {
     opacity: 0;
+  }
+}
+
+@keyframes suture-sew {
+  from {
+    opacity: 0;
+    stroke-dashoffset: 60;
+  }
+  to {
+    opacity: 1;
+    stroke-dashoffset: 0;
   }
 }
 

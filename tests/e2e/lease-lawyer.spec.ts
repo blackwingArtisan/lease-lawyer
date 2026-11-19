@@ -188,4 +188,17 @@ test.describe('Lease Lawyer', () => {
     // A new element, so the stamp animation and the lightning play again.
     expect(await page.getByTestId('stamp').evaluate((el, old) => el !== old, first)).toBe(true);
   });
+
+  test('sews the cited clause to its proof step, and moves the stitch to the step you point at', async ({ page }) => {
+    await page.getByTestId('lease-gaslight-row').click();
+    await page.getByRole('button', { name: 'Deposit and wear and tear', exact: true }).click();
+    const suture = page.getByTestId('suture');
+    const leaseSteps = page.locator('[data-testid="proof-step"][data-kind="lease"]');
+    await expect(leaseSteps).toHaveCount(2);
+    const last = await leaseSteps.nth(1).getAttribute('data-step-fact');
+    const first = await leaseSteps.nth(0).getAttribute('data-step-fact');
+    await expect(suture).toHaveAttribute('data-fact', last!);
+    await leaseSteps.nth(0).hover();
+    await expect(suture).toHaveAttribute('data-fact', first!);
+  });
 });
