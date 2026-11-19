@@ -9,7 +9,7 @@ interface Props {
 
 const MAX_BYTES = 200_000;
 
-/** The three sample leases as case files, plus upload or paste for your own. */
+/** The sample leases as case files, plus upload or paste for your own. */
 export function CaseFiles({ selected, onPick }: Props) {
   const fileInput = useRef<HTMLInputElement>(null);
   const [pasting, setPasting] = useState(false);

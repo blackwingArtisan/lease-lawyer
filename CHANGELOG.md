@@ -5,6 +5,7 @@ Notable changes to Lease Lawyer. The Kiro sessions and what they changed are rec
 ## Unreleased
 
 ### Added
+- A fourth sample, Hollowmere Flats, the "try to make it lie" lease: its pets clause points to a rider, its deposit deductions to an exhibit, it lets the landlord enter "at any time", and it states the subletting rule as a double negative. Lease Lawyer answers "Can't tell" on pets, deposit deductions and entry, and reads the double negative correctly as "written consent required".
 - "Can't tell" has its own stamp: amber, dashed, with a question mark, shown when the reader could not read a clause the answer depends on. "Unproven" stays for answers that are open for other reasons.
 - Unreadable clauses are outlined in amber in the lease, with a typed note naming what the reader could not read. The clause an answer is blocked on is marked more strongly and scrolled into view inside the lease.
 - After an answer, the lease scrolls (inside its own pane) to the first cited quote.

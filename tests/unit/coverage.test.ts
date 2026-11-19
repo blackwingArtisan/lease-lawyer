@@ -204,6 +204,22 @@ describe('late-fee clauses that name a day but no grace fact', () => {
   });
 });
 
+describe('the trick lease (Hollowmere Flats)', () => {
+  it('answers "can\'t tell" where the lease points elsewhere, and still proves what it can read', async () => {
+    const s = sample('hollowmere-flats');
+    const verdict = async (topic: string) => {
+      const a = await ask({ topic, facts: s.facts, tenant: [], unread: s.unread });
+      return [a.verdict, a.unread.map((u) => u.clauseId).join(',')];
+    };
+    expect(await verdict('pets')).toEqual(['unknown', 's5']);
+    expect(await verdict('wear_and_tear')).toEqual(['unknown', 's4']);
+    expect(await verdict('entry_without_notice')).toEqual(['unknown', 's6']);
+    expect(await verdict('sublet')).toEqual(['yes', '']);
+    expect(await verdict('late_fee')).toEqual(['yes', '']);
+    expect(await verdict('rent_increase')).toEqual(['no', '']);
+  });
+});
+
 describe('clauses that look silent but are not', () => {
   const readLease = (text: string) => {
     const lease = parseLease('t', text);

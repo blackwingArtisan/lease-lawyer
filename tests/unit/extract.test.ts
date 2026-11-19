@@ -52,6 +52,23 @@ describe('rule-based extraction on the sample leases', () => {
     ]);
   });
 
+  it('reads Hollowmere Flats, the trick lease, and leaves its riders and exhibits unread', () => {
+    expect(summary('hollowmere-flats')).toEqual([
+      'term(fixed)@s2',
+      'monthly_rent(1750)@s3',
+      'security_deposit(1750)@s4',
+      // "shall not fail to obtain ... consent" is a double negative for "must obtain consent".
+      'sublet_policy(consent_required)@s7',
+      'late_fee(50)@s8',
+      'late_fee_grace_days(5)@s8',
+    ]);
+    expect(sample('hollowmere-flats').unread.map((u) => `${u.predicate}@${u.clauseId}`)).toEqual([
+      'deposit_deduction@s4',
+      'pet_policy@s5',
+      'entry_notice_hours@s6',
+    ]);
+  });
+
   it('produces no rejected candidates on the samples', () => {
     for (const id of ['wychwood-arms', 'gaslight-row', 'cobweb-court']) {
       expect(sample(id).rejected).toEqual([]);

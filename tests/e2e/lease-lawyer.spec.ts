@@ -161,4 +161,14 @@ test.describe('Lease Lawyer', () => {
     expect(bg).toContain('repeating-linear-gradient');
     await expect(card.locator('.case-name')).toHaveCSS('color', 'rgb(241, 230, 207)');
   });
+
+  test('will not be talked into a pets answer by the trick lease', async ({ page }) => {
+    await page.getByTestId('lease-hollowmere-flats').click();
+    await expect(page.getByTestId('fact-count')).toHaveText('6 facts extracted');
+    await page.getByRole('button', { name: 'Pets and assistance animals', exact: true }).click();
+    await expect(page.getByTestId('stamp')).toHaveText("?Can't tell");
+    await expect(page.getByTestId('headline')).toContainText('Section 5 (ANIMALS) mentions pets');
+    await expect(page.locator('#clause-s5')).toHaveClass(/is-blocking/);
+    await expect(page.locator('#clause-s5')).toBeInViewport();
+  });
 });
