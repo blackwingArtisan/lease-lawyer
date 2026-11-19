@@ -17,6 +17,7 @@ Notable changes to Lease Lawyer. The Kiro sessions and what they changed are rec
 - Before the first question, the result area shows an unlit proof chain: "Ask, and the circuit will charge."
 
 ### Changed
+- The README leads with the problem and the promise: a 30-second path through the app, sourced figures on renters, the justice gap and legal-AI hallucination, the measured drop from 4 of 8 confident wrong answers to 0 on an unseen lease, why a chatbot alone is not enough, prior art (Catala, Blawx, Logical English, Docassemble) and what this adds, and where it goes next. The engine details follow below.
 - The verdict lands in view: after a question is asked, the page scrolls the result to the top of the window (instantly under reduced motion) and moves focus to it. A smaller masthead and a tighter case strip keep the topic chips above the fold at 1280x720, and an end-to-end test checks the stamp is fully in view at 1280x720 and 1440x900.
 - The hero line now states the promise: "Chatbots guess about your lease. Lease Lawyer proves it, or says it can't tell."
 
