@@ -38,11 +38,28 @@ export function App() {
   const busy = state.status === 'reading' || state.status === 'thinking';
   const factCount = state.verification?.facts.length ?? 0;
 
+  // After a question is asked, bring the verdict into view once it renders, then move focus to it.
+  const revealPending = useRef(false);
   const submit = (text: string) => {
     setDraft(text);
     setFocusFact(null);
-    void askQuestion(text).then(() => resultRef.current?.focus({ preventScroll: true }));
+    revealPending.current = true;
+    void askQuestion(text);
   };
+  useEffect(() => {
+    if (!revealPending.current || busy) return;
+    if (!state.answer && !state.outOfScope && !state.error) return;
+    revealPending.current = false;
+    const result = resultRef.current;
+    if (!result) return;
+    const target = result.querySelector<HTMLElement>('.verdict-row, .out-of-scope, .error') ?? result;
+    const box = target.getBoundingClientRect();
+    if (box.top < 0 || box.bottom > window.innerHeight) {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      result.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' });
+    }
+    result.focus({ preventScroll: true });
+  }, [state.answer, state.outOfScope, state.error, busy]);
 
   return (
     <div className="page">
@@ -55,8 +72,8 @@ export function App() {
             Lease <span className="bolt" aria-hidden="true">&#x26A1;</span> Lawyer
           </h1>
           <p className="tagline">
-            Ask your lease a plain question. Get an answer you can check, clause by clause: a Prolog engine proves it, step by
-            step, from the words in your lease.
+            <strong>Chatbots guess about your lease. Lease Lawyer proves it, or says it can&rsquo;t tell.</strong> Every answer is a
+            Prolog proof, and every step cites the words in your lease.
           </p>
         </div>
       </header>

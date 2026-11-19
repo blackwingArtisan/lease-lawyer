@@ -100,7 +100,7 @@ a {
 
 .masthead {
   position: relative;
-  padding: 0 0 28px;
+  padding: 0 0 16px;
   text-align: center;
   border-bottom: 1px solid var(--rule);
 }
@@ -108,7 +108,7 @@ a {
 .shelf {
   display: block;
   width: 100%;
-  height: 84px;
+  height: 48px;
   opacity: 0.8;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
@@ -117,7 +117,7 @@ a {
 .masthead-inner {
   max-width: 760px;
   margin: 0 auto;
-  padding-top: 18px;
+  padding-top: 8px;
 }
 
 .eyebrow {
@@ -132,7 +132,7 @@ a {
   margin: 4px 0 8px;
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(2.6rem, 7vw, 5rem);
+  font-size: clamp(2.4rem, 6vw, 3.5rem);
   line-height: 1;
   letter-spacing: 0.02em;
   color: var(--bone);
@@ -152,9 +152,16 @@ a {
 
 .tagline {
   margin: 0 auto;
-  max-width: 620px;
+  max-width: 680px;
   color: var(--fog);
-  font-size: 1.08rem;
+  font-size: 1.02rem;
+  line-height: 1.45;
+}
+
+.tagline strong {
+  display: block;
+  color: var(--bone);
+  font-weight: 500;
 }
 
 /* ---------- Sections ---------- */
@@ -163,10 +170,10 @@ a {
   display: flex;
   align-items: baseline;
   gap: 12px;
-  margin: 32px 0 14px;
+  margin: 18px 0 10px;
   font-family: var(--display);
   font-weight: 400;
-  font-size: 1.55rem;
+  font-size: 1.4rem;
   color: var(--bone);
 }
 
@@ -206,7 +213,7 @@ a {
   gap: 4px;
   width: 100%;
   height: 100%;
-  padding: 26px 16px 16px;
+  padding: 24px 14px 10px;
   text-align: left;
   color: var(--parchment-ink);
   font: inherit;
@@ -254,7 +261,8 @@ button.case:hover {
 }
 
 .case-blurb {
-  font-size: 0.9rem;
+  font-size: 0.84rem;
+  line-height: 1.35;
   color: #4a3519;
 }
 
@@ -528,6 +536,7 @@ mark.fact.flash {
 .result {
   margin-top: 18px;
   outline: none;
+  scroll-margin-top: 12px;
 }
 
 .idle {

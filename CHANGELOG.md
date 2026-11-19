@@ -4,6 +4,10 @@ Notable changes to Lease Lawyer. The Kiro sessions and what they changed are rec
 
 ## Unreleased
 
+### Changed
+- The verdict lands in view: after a question is asked, the page scrolls the result to the top of the window (instantly under reduced motion) and moves focus to it. A smaller masthead and a tighter case strip keep the topic chips above the fold at 1280x720, and an end-to-end test checks the stamp is fully in view at 1280x720 and 1440x900.
+- The hero line now states the promise: "Chatbots guess about your lease. Lease Lawyer proves it, or says it can't tell."
+
 ### Fixed
 - Questions about small pets ("Can I keep a goldfish?", hamsters, birds, reptiles) are routed to the pets rules instead of being refused as out of scope.
 - "Can I get my deposit back?" is routed to the deposit rules.
