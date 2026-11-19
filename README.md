@@ -2,7 +2,9 @@
 
 [![CI](https://github.com/blackwingArtisan/lease-lawyer/actions/workflows/ci.yml/badge.svg)](https://github.com/blackwingArtisan/lease-lawyer/actions/workflows/ci.yml)
 
-**Chatbots guess about your lease. Lease Lawyer proves it, or says it can't tell.**
+**Your landlord kept $600 of your $1,500 deposit for normal wear and tear. Ask your lease. Get a proof, or an honest Can't tell.**
+
+Chatbots guess about your lease. Lease Lawyer proves it, or says it can't tell.
 
 Ask a plain question ("Can my landlord keep my deposit for normal wear and tear?") and get Yes, No, or Can't tell. A Yes or No comes with a proof you can check: a 1970s logic engine works it out step by step, and every step quotes the exact clause it rests on. When the lease points somewhere the reader cannot follow, the answer is "Can't tell", with the section to read yourself.
 
@@ -12,7 +14,7 @@ Ask a plain question ("Can my landlord keep my deposit for normal wear and tear?
 | --- | --- | --- |
 | ![Gaslight Row: No, with the proof chain and the cited clause lit](docs/media/verdict-no.png) | ![Hollowmere Flats: Can't tell, with the unreadable clauses outlined](docs/media/cant-tell.png) | ![The same No at phone width](docs/media/phone.png) |
 
-A Kiroween 2026 entry in the **Frankenstein** category: Prolog, the logic language of 1972, stitched to a 2026 language model at a single seam. The model reads; Prolog decides; and nothing crosses the seam without a word-for-word quote from the lease.
+A Kiroween 2026 entry in the **Frankenstein** category: a 1972 brain, a 2026 eye, a verbatim-quote immune system, stitched with sutures you can see. Prolog, the logic language of 1972, decides; a modern language model only reads; and nothing crosses the seam between them without a word-for-word quote from the lease.
 
 ## Try it in 30 seconds
 1. Open the app. On a first visit a 30-second tour plays by itself; press **Replay the 30-second tour** to see it again.
@@ -71,8 +73,10 @@ Rules-as-code is an established field. [Catala](https://catala-lang.org/) is a p
 Those tools encode the law. Lease Lawyer adds the other half: a reader for a document nobody encoded (your lease), a verifier that drops any fact whose quote is not in the clause, a coverage check that turns "the reader missed it" into "Can't tell", and abduction that turns an open proof into the next question to ask.
 
 ## The business case
-- **Free for renters**, in the browser, with no account and nothing sent anywhere by default. The free tier costs nothing to run: the default reader and the prover run on the renter's device.
+- **Free for renters**, in the browser, with no account and nothing sent anywhere by default. The free tier needs no server of its own: the default reader and the prover run on the renter's device.
 - **A paid seat for legal aid counselors and tenant unions:** shareable proof links, batch review of a building's leases, and the trick-clause scan as a checklist. A counselor checks a cited chain instead of reading a lease from scratch.
+- **A "lint your lease before you sign" check for small landlords:** the trick-clause scan run on their own template, so a void wear-and-tear charge is caught before a tenant signs it.
+- **Why now:** deposit law keeps moving. California's AB 12 capped most security deposits at one month's rent from July 1, 2024 ([Assemblymember Haney, 2024](https://haney.asmdc.org/press-releases/20240628-starting-monday-it-will-be-illegal-landlords-charge-more-one-months-rent)). In Lease Lawyer a change like that is a reviewed rule edit with tests, not a hope that a model has caught up.
 - **Per-state rule packs** as the moat. Each pack is a Prolog file with verbatim statute citations and a test matrix, so adding a state is reviewable, testable work, not a new prompt, and a chatbot cannot copy it by being more fluent.
 
 ## Built with Kiro

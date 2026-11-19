@@ -31,7 +31,7 @@ Notable changes to Lease Lawyer. The Kiro sessions and what they changed are rec
 - Before the first question, the result area shows an unlit proof chain: "Ask, and the circuit will charge."
 
 ### Changed
-- The README is shorter: a composite $600 deposit example, the chatbot comparison, the business case, and one block of run and test commands; the details moved to `docs/ARCHITECTURE.md`.
+- The README is shorter and leads with the money: a hero line on a kept deposit, a composite $600 example, the chatbot comparison, the business case (with a lease check for small landlords and why now), and one block of run and test commands; the details moved to `docs/ARCHITECTURE.md`.
 - KIRO-LOG.md opens with a table of the Kiro features the repository uses, with files, evidence and results, then the measured results and a dated timeline; the exact prompts moved to an appendix.
 - The README leads with the problem and the promise: a 30-second path through the app, sourced figures on renters, the justice gap and legal-AI hallucination, the measured drop from 4 of 8 confident wrong answers to 0 on an unseen lease, why a chatbot alone is not enough, prior art (Catala, Blawx, Logical English, Docassemble) and what this adds, and where it goes next. The engine details follow below.
 - The verdict lands in view: after a question is asked, the page scrolls the result to the top of the window (instantly under reduced motion) and moves focus to it. A smaller masthead and a tighter case strip keep the topic chips above the fold at 1280x720, and an end-to-end test checks the stamp is fully in view at 1280x720 and 1440x900.
