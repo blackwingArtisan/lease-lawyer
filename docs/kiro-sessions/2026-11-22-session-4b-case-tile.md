@@ -2,7 +2,7 @@
 
 - Tool: kiro-cli 3.5.0, v3 engine, non-interactive
 - Command (repo root, stdin closed): `PW_PORT=3860 kiro-cli chat --v3 --no-interactive --trust-workspace --trust-tools=fs_read,fs_write,run_command --output-format stream-json "<prompt>" </dev/null` (not `--trust-all-tools`)
-- When: 2026-11-19, 20:03:31 to 20:08:34 UTC (5 min 2 s wall time, under a 25-minute cap); exit code 0
+- When: 2026-11-22, 20:03:31 to 20:08:34 UTC (5 min 2 s wall time, under a 25-minute cap); exit code 0
 - Credits used: 3.29 (kiroween2026 `/usage` read 529.98 before and 543.45 after)
 - Finished on its own in 5 min 2 s (exit code 0). 3.29 credits, read from kiro-cli's own `session_usage` event.
 - Kiro traced the 3 end-to-end failures left by session 4 to the fifth case tile (Case No. 005), which pushed the verdict stamp just out of full view (visible ratio 0.99999994). It hid samples that carry a red-team fixture from the case tiles until Session B's task 13 wires them in, and changed no tests. It said it confirmed the cause by the fix, not by tracing the layout.

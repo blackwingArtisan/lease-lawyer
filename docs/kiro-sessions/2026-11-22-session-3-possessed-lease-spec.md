@@ -2,7 +2,7 @@
 
 - Tool: kiro-cli 3.5.0, v3 engine, non-interactive
 - Command (repo root, stdin closed): `PW_PORT=3860 kiro-cli chat --v3 --no-interactive --trust-workspace --trust-tools=fs_read,fs_write,run_command --output-format stream-json "<prompt>" </dev/null` (not `--trust-all-tools`)
-- When: 2026-11-19, 19:28:16 to 19:33:03 UTC (4 min 47 s wall time, under a 25-minute cap); exit code 0
+- When: 2026-11-22, 19:28:16 to 19:33:03 UTC (4 min 47 s wall time, under a 25-minute cap); exit code 0
 - Credits used: 6.57 (kiroween2026 `/usage` read 449.78 before and 464.20 after)
 - Finished on its own in 4 min 47 s (exit code 0). 6.57 credits, read from kiro-cli's own `session_usage` event (`--output-format stream-json`). The shared account balance moved more because other Kiro work was running at the same time.
 - Kiro read the steering, the existing proof-chain-answers spec and the verifier, coverage, extractor, vocabulary, fixtures, adapters and UI modules named in the prompt. It then wrote `.kiro/specs/possessed-lease/`: requirements.md (9 requirements, 77 EARS criteria), design.md (data model, detection rules and word lists, a mermaid diagram, eight correctness properties, a draft of Case No. 005 "Marrowgate Lofts" and seven open questions with defaults) and tasks.md (18 tasks in Session A and Session B groups). It changed no code.

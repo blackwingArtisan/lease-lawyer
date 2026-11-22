@@ -54,4 +54,4 @@ A task is checked only when the code and a test that exercises it both exist. Pl
   - [x] 16.1 Update `tests/e2e/tour.spec.ts` to six frames and assert the caption count equals the struck lines on screen; the skip and click-away tests still pass (Req 8.2, 8.3, 8.6)
   - [x] 16.2 Test that the tour does not auto-start under reduced motion (Req 8.5)
 - [x] 17. Update `mobile.spec.ts` and `lease-lawyer.spec.ts` for the sixth case tile and re-run the full unit and end-to-end suites (Req 9.3, 9.5)
-- [ ] 18. README: a short "Possessed lease" section with the screenshot of the struck list, the red-team fixture label, the list of what detection can and cannot catch (homoglyphs, unlisted wording) and the updated case count; "How it works" text in the Workbench; `KIRO-LOG.md` entry (Req 5.6, 5.8)
+- [x] 18. README: a short "Possessed lease" section with the screenshot of the struck list, the red-team fixture label, the list of what detection can and cannot catch (homoglyphs, unlisted wording) and the updated case count; "How it works" text in the Workbench; `KIRO-LOG.md` entry (Req 5.6, 5.8). README and Workbench by Kiro in session 5; the KIRO-LOG entry by the developer

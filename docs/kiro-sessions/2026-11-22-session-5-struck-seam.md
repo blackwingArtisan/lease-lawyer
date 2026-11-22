@@ -2,7 +2,7 @@
 
 - Tool: kiro-cli 3.5.0, v3 engine, non-interactive
 - Command (repo root, stdin closed): `PW_PORT=3860 kiro-cli chat --v3 --no-interactive --trust-workspace --trust-tools=fs_read,fs_write,run_command,@lease-lawyer-prover,@context7 --output-format stream-json "<prompt>" </dev/null` (not `--trust-all-tools`)
-- When: 2026-11-19, 20:10:49 to 20:21:43 UTC (10 min 54 s wall time, under a 25-minute cap); exit code 0
+- When: 2026-11-22, 20:10:49 to 20:21:43 UTC (10 min 54 s wall time, under a 25-minute cap); exit code 0
 - Credits used: 17.02 (kiroween2026 `/usage` read 549.00 before and 581.49 after)
 - Finished on its own in 10 min 54 s (exit code 0). 17.02 credits, read from kiro-cli's own `session_usage` event.
 - MCP, on the record:
