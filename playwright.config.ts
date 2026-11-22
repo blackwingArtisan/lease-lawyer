@@ -17,7 +17,7 @@ export default defineConfig({
   },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'] }, testIgnore: /mobile\.spec\.ts/ },
-    { name: 'phone', use: { ...devices['Pixel 7'] }, testMatch: /mobile\.spec\.ts/ },
+    { name: 'phone', use: { ...devices['Pixel 7'] }, testMatch: /(mobile|struck)\.spec\.ts/ },
   ],
   webServer: {
     command: `npm run build && npx vite preview --port ${PORT} --strictPort`,

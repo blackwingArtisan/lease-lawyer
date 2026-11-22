@@ -1,3 +1,4 @@
+import AxeBuilder from '@axe-core/playwright';
 import type { Page } from '@playwright/test';
 import { expect, test } from './test';
 
@@ -96,8 +97,20 @@ test.describe('Case No. 005: struck from the record', () => {
     await expect(list.locator('del')).toHaveCount(n);
   });
 
-  // @axe-core/playwright is not a dependency of this project and none may be added, so this is a
-  // contrast check written in Playwright rather than an AxeBuilder run (task 15.3 stays open).
+  test('axe finds no WCAG 2.0/2.1 A or AA violations with the struck lines shown (Req 7.5, 7.7)', async ({ page }, testInfo) => {
+    await openCaseFive(page);
+    await expect(page.getByTestId('struck-line').first()).toBeVisible();
+    // Let the finite animations (the strike) finish so axe measures the final colors; looping ones never end.
+    await page.waitForFunction(() =>
+      document.getAnimations().every((a) => a.effect?.getComputedTiming().iterations === Infinity || a.playState !== 'running'),
+    );
+    const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
+    const summary = results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`);
+    expect(summary, `${testInfo.project.name}`).toEqual([]);
+  });
+
+  // Axe's color-contrast rule can leave text over layered translucent backgrounds as "incomplete",
+  // so this direct ratio check on the struck elements stays as a second guard for Req 7.5.
   test('struck text has a contrast ratio of at least 4.5 to 1 (Req 7.5)', async ({ page }) => {
     await openCaseFive(page);
     const ratios = await page.getByTestId('struck-list').evaluate((root) => {

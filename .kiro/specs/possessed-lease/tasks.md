@@ -42,11 +42,11 @@ A task is checked only when the code and a test that exercises it both exist. Pl
   - [x] 12.2 Unit test: a rejection with an unknown clause id renders no section button (Req 6.6)
 - [x] 13. `useLeaseLawyer.ts`, `App.tsx` and `CaseFiles.tsx`: pass the red-team id from the sample to the loader, use the red-team reader for Case No. 005, expose `readerName`, show the "red-team fixture" tag on the tile and the label "recorded, not model output" in the seam (Req 5.5, 5.8, 5.9)
 - [x] 14. `styles.css`: `--struck` tokens, red crossed-out styling, strike animation, reduced-motion override, phone wrapping (Req 6.3, 6.9, 7.5, 7.6, 7.8)
-- [ ] 15. Playwright `tests/e2e/struck.spec.ts` on the production build: Case No. 005 shows struck lines with the badge text, reasons and sections; the count matches the Verifier note and is not zero; "Can I get a dog?" gives "Can't tell" naming section 8 (Req 5.10, 5.11, 6.1-6.5)
+- [x] 15. Playwright `tests/e2e/struck.spec.ts` on the production build: Case No. 005 shows struck lines with the badge text, reasons and sections; the count matches the Verifier note and is not zero; "Can I get a dog?" gives "Can't tell" naming section 8 (Req 5.10, 5.11, 6.1-6.5)
   - [x] 15.1 Keyboard: Tab to a section button, Enter moves focus to the clause, the focus ring is visible (Req 6.7, 7.3, 7.4)
   - [x] 15.2 Screen reader semantics: the labelled list and the badge text are in the accessibility tree, and the strike is not the only cue (Req 7.1, 7.2)
-  - [ ] 15.3 `AxeBuilder` reports zero violations on Case No. 005 with struck lines shown, on the desktop and phone projects (Req 7.5, 7.7)
-    - Open: `@axe-core/playwright` (and `axe-core`) are not installed and no dependency may be added. `struck.spec.ts` has a contrast-ratio check (Req 7.5) in its place; Req 7.7 still needs the AxeBuilder run.
+  - [x] 15.3 `AxeBuilder` reports zero violations on Case No. 005 with struck lines shown, on the desktop and phone projects (Req 7.5, 7.7)
+    - `struck.spec.ts` runs `AxeBuilder` with `wcag2a`, `wcag2aa`, `wcag21a` and `wcag21aa`; `playwright.config.ts` now also sends `struck.spec.ts` to the phone project. The contrast-ratio test stays as a second guard for Req 7.5.
   - [x] 15.4 `reducedMotion: 'reduce'`: struck lines show their final state and `animation-name` is none (Req 7.6)
   - [x] 15.5 Phone width 412 px: no horizontal scroll with struck lines shown (Req 7.8)
   - [x] 15.6 A route handler aborts any request outside the local server and the test asserts none was made on loading Case No. 005 (Req 5.9, 9.3)

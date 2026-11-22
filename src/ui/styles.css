@@ -363,7 +363,7 @@ button.case:hover {
 }
 
 .case-own .case-tab {
-  background: var(--brass-dim);
+  background: var(--brass);
   color: var(--ink);
 }
 
