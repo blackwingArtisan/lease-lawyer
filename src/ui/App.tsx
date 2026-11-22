@@ -239,7 +239,14 @@ export function App() {
                     tenant={state.tenant}
                     busy={busy}
                   />
-                  {state.verification && <Seam readerName={adapters.reader.name} verification={state.verification} answer={state.answer} />}
+                  {state.verification && (
+                    <Seam
+                      readerName={state.readerName}
+                      verification={state.verification}
+                      answer={state.answer}
+                      onShowClause={(clauseId) => setFocusFact({ id: clauseId, nonce: Date.now(), clause: true })}
+                    />
+                  )}
                   {state.answer.steps.length > 0 && (
                     <ProofChain
                       key={`${state.answer.query}:${state.answer.proofTerm ?? ''}`}
@@ -272,7 +279,7 @@ export function App() {
               )}
             </section>
 
-            <Workbench verification={state.verification} answer={state.answer} readerName={adapters.reader.name} translatorName={adapters.translator.name} />
+            <Workbench verification={state.verification} answer={state.answer} readerName={state.readerName} translatorName={adapters.translator.name} />
           </section>
         </div>
       </main>

@@ -10,6 +10,16 @@ test.describe('Lease Lawyer', () => {
     await expect(page.getByTestId('fact-count')).toContainText('facts extracted');
   });
 
+  test('shows six case tiles: five sample leases, the last tagged as a red-team fixture, and "Your own" (Req 5.1, 5.8)', async ({ page }) => {
+    const tiles = page.locator('.case-grid > li');
+    await expect(tiles).toHaveCount(6);
+    await expect(page.locator('button.case')).toHaveCount(5);
+    await expect(page.getByTestId('lease-marrowgate-lofts').locator('.case-tab')).toHaveText('Case No. 005');
+    await expect(page.getByTestId('red-team-tag')).toHaveCount(1);
+    await expect(page.getByTestId('lease-marrowgate-lofts').getByTestId('red-team-tag')).toHaveText('red-team fixture');
+    await expect(tiles.last().locator('.case-tab')).toHaveText('Your own');
+  });
+
   test('picks a lease, asks a question, and shows a proof chain citing the right clause', async ({ page }) => {
     await page.getByTestId('lease-wychwood-arms').click();
     await expect(page.getByTestId('fact-count')).toHaveText('10 facts extracted');

@@ -59,7 +59,9 @@ export function VerdictPanel({ answer, question, tenant, busy, onFollowUp, onSho
                 <button type="button" className="linkish" data-testid="show-unread" onClick={() => onShowClause(u.clauseId)}>
                   Section {u.number} ({u.title})
                 </button>{' '}
-                mentions {u.subjects.join(' and ')}.
+                {u.readerDirected
+                  ? `has text addressed to automated readers about ${u.subjects.join(' and ')}. The engine ignores it.`
+                  : `mentions ${u.subjects.join(' and ')}.`}
               </li>
             ))}
           </ul>

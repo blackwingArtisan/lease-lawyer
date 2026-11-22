@@ -33,7 +33,7 @@ const videoDir = await mkdtemp(join(tmpdir(), 'lease-lawyer-tour-'));
 const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, recordVideo: { dir: videoDir, size: { width: 1280, height: 720 } } });
 const page = await context.newPage();
 await page.goto(`${base}?tour=on`);
-await page.getByTestId('tour').filter({ hasText: 'Tour 5 of 5' }).waitFor({ timeout: 40_000 });
+await page.getByTestId('tour').filter({ hasText: 'Tour 6 of 6' }).waitFor({ timeout: 40_000 });
 await page.waitForTimeout(3500);
 await context.close();
 const [video] = (await readdir(videoDir)).filter((f) => f.endsWith('.webm'));

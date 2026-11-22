@@ -63,19 +63,23 @@ export function CaseFiles({ selected, onPick }: Props) {
   return (
     <div className="case-files">
       <ul className="case-grid" role="list">
-        {/* Case No. 005 (the red-team sample) stays off the shelf until the tour and reader wiring (tasks 13 and 16) land. */}
-        {SAMPLE_LEASES.filter((s) => !s.redTeam).map((s, i) => (
+        {SAMPLE_LEASES.map((s, i) => (
           <li key={s.id}>
             <button
               type="button"
               className="case"
               aria-pressed={selected === s.id}
               data-testid={`lease-${s.id}`}
-              onClick={() => onPick({ id: s.id, name: s.name, text: s.text })}
+              onClick={() => onPick({ id: s.id, name: s.name, text: s.text, redTeam: s.redTeam })}
             >
               <span className="case-tab">Case No. {String(i + 1).padStart(3, '0')}</span>
               <span className="case-name">{s.name}</span>
               <span className="case-blurb">{s.blurb}</span>
+              {s.redTeam && (
+                <span className="case-flag" data-testid="red-team-tag">
+                  red-team fixture
+                </span>
+              )}
             </button>
           </li>
         ))}

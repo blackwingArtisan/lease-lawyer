@@ -18,6 +18,11 @@ test('on a phone: swipe the case files, open the lease from a proof step, and co
   // The case files scroll sideways inside their own row, not the page.
   const row = page.locator('.case-grid');
   expect(await row.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(true);
+  // Six tiles (five cases and "Your own") sit in the one row, and Case No. 005 can be swiped to.
+  await expect(row.locator('> li')).toHaveCount(6);
+  await page.getByTestId('lease-marrowgate-lofts').scrollIntoViewIfNeeded();
+  await expect(page.getByTestId('lease-marrowgate-lofts')).toBeInViewport();
+  await expect(page.getByTestId('red-team-tag')).toBeVisible();
   await page.getByTestId('lease-gaslight-row').scrollIntoViewIfNeeded();
   await page.getByTestId('lease-gaslight-row').click();
 

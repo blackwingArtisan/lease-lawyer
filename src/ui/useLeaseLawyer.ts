@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { Adapters } from '../adapters/types';
+import type { Adapters, LeaseReader } from '../adapters/types';
+import { localLeaseReader } from '../adapters/local';
+import { redTeamLeaseReader } from '../adapters/redTeam';
+import { redTeamFixture } from '../lease/redTeam';
 import { parseLease } from '../lease/parse';
 import type { ParsedLease, VerificationResult } from '../lease/types';
 import { verifyFacts } from '../lease/verify';
@@ -10,6 +13,8 @@ export interface LeaseSource {
   id: string;
   name: string;
   text: string;
+  /** Id of a red-team fixture (src/lease/redTeam.ts). Set only by a sample lease that carries one. */
+  redTeam?: string;
 }
 
 export type Status = 'idle' | 'reading' | 'thinking' | 'ready' | 'error';
@@ -17,6 +22,8 @@ export type Status = 'idle' | 'reading' | 'thinking' | 'ready' | 'error';
 export interface LabState {
   lease: ParsedLease | null;
   verification: VerificationResult | null;
+  /** Name of the reader that produced the current facts. */
+  readerName: string;
   status: Status;
   error: string | null;
   question: string;
@@ -30,6 +37,7 @@ export interface LabState {
 export function useLeaseLawyer(adapters: Adapters) {
   const [lease, setLease] = useState<ParsedLease | null>(null);
   const [verification, setVerification] = useState<VerificationResult | null>(null);
+  const [readerName, setReaderName] = useState(adapters.reader.name);
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<string | null>(null);
   const [question, setQuestion] = useState('');
@@ -59,7 +67,12 @@ export function useLeaseLawyer(adapters: Adapters) {
       setLease(parsed);
       setVerification(null);
       try {
-        const candidates = await adapters.reader.read(parsed);
+        // A sample that carries a red-team fixture is read by the local reader plus that fixture's
+        // recorded candidates: no network call and no Bedrock, whichever backend is configured.
+        const fixture = source.redTeam ? redTeamFixture(source.redTeam) : undefined;
+        const reader: LeaseReader = fixture ? redTeamLeaseReader(localLeaseReader, fixture) : adapters.reader;
+        setReaderName(reader.name);
+        const candidates = await reader.read(parsed);
         if (id !== run.current) return;
         setVerification(verifyFacts(parsed, candidates));
         setStatus('ready');
@@ -143,6 +156,6 @@ export function useLeaseLawyer(adapters: Adapters) {
     lastVerification.current = verification;
   }, [verification, topic, answer, outOfScope, question, tenant, prove]);
 
-  const state: LabState = { lease, verification, status, error, question, answer, outOfScope, tenant };
+  const state: LabState = { lease, verification, readerName, status, error, question, answer, outOfScope, tenant };
   return { state, loadLease, askQuestion, answerFollowUp };
 }

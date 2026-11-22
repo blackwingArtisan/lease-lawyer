@@ -20,6 +20,10 @@
   --volt-glow: rgb(166 255 110 / 0.55);
   --blood: #ff7a6b;
   --blood-deep: #b3261e;
+  /* Struck from the record: red text on the dark panel (6:1 or better), a deeper red for rules and borders. */
+  --struck: #ff8f80;
+  --struck-rule: #d9483b;
+  --struck-wash: rgb(179 38 30 / 0.16);
   --amber: #ffc15a;
   --focus: #7fe8ff;
   --step-delay: 160ms;
@@ -269,7 +273,7 @@ a {
 
 .case-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 14px;
   margin: 0;
   padding: 0;
@@ -839,6 +843,129 @@ mark.fact.flash {
   color: var(--fog-dim);
 }
 
+/* Struck from the record: every fact the verifier threw out, in red with its text crossed out. */
+.struck {
+  margin: 10px 0 0;
+  padding: 12px 14px;
+  background: var(--struck-wash);
+  border: 1px dashed var(--struck-rule);
+  border-radius: 10px;
+}
+
+.struck-title {
+  margin: 0 0 8px;
+  font-family: var(--display);
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: var(--struck);
+}
+
+.struck-lines {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.struck-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  padding-top: 10px;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--bone);
+  border-top: 1px solid rgb(217 72 59 / 0.35);
+  overflow-wrap: anywhere;
+}
+
+.struck-line:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.struck-badge {
+  order: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--struck);
+}
+
+.struck-section {
+  order: 1;
+  flex: 0 0 auto;
+  padding: 3px 10px;
+  font-size: 0.8rem;
+}
+
+.struck-topic,
+.struck-claim,
+.struck-quote,
+.struck-reason {
+  order: 2;
+  flex: 1 0 100%;
+  min-width: 0;
+}
+
+.struck-topic {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fog);
+}
+
+/* The strike is a line drawn across the claim; it is also written in words by the badge. */
+.struck-claim {
+  flex: 0 1 auto;
+  max-width: 100%;
+  color: var(--struck);
+  text-decoration: none;
+  background: linear-gradient(var(--struck-rule), var(--struck-rule)) no-repeat 0 52% / 100% 2px;
+  animation: strike-draw 0.4s ease-out both;
+}
+
+.struck-quote {
+  quotes: '\201C' '\201D';
+  color: var(--fog);
+  font-style: italic;
+  text-decoration: line-through;
+  text-decoration-color: var(--struck-rule);
+}
+
+.struck-reason {
+  color: var(--bone);
+}
+
+@keyframes strike-draw {
+  from {
+    background-size: 0 2px;
+  }
+  to {
+    background-size: 100% 2px;
+  }
+}
+
+/* Case No. 005's tile says plainly that its reader is a recorded fixture. */
+.case-flag {
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 1px 8px;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #7d1a14;
+  border: 1px solid #7d1a14;
+  border-radius: 999px;
+}
+
 .stamp-mark {
   display: inline-block;
   margin-right: 0.18em;
@@ -1349,6 +1476,11 @@ mark.fact.flash {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Struck lines show their final state at once. */
+  .struck-claim {
+    animation: none;
+    background-size: 100% 2px;
+  }
   *,
   *::before,
   *::after {

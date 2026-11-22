@@ -3,7 +3,7 @@ import { SAMPLE_LEASES } from '../lease/fixtures';
 import type { LabState, LeaseSource } from './useLeaseLawyer';
 
 export const TOUR_SEEN_KEY = 'lease-lawyer.tour-seen';
-const TOTAL = 5;
+const TOTAL = 6;
 
 export interface TourFrame {
   n: number;
@@ -37,8 +37,9 @@ function markSeen() {
 const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /**
- * The 30-second tour: a greedy lease proved wrong in cited steps, then a trick lease the engine
- * will not guess about. It runs once on a first visit (not under reduced motion), can be replayed,
+ * The 30-second tour: a greedy lease proved wrong in cited steps, a trick lease the engine will not
+ * guess about, then a poisoned lease whose planted note to the AI reader the verifier strikes.
+ * It runs once on a first visit (not under reduced motion), can be replayed,
  * and stops the moment the visitor clicks or types anywhere else.
  */
 export function useTour(controls: Controls) {
@@ -68,7 +69,7 @@ export function useTour(controls: Controls) {
     const show = (n: number, caption: string) => alive() && setFrame({ n, total: TOTAL, caption });
     const sample = (leaseId: string) => {
       const s = SAMPLE_LEASES.find((l) => l.id === leaseId)!;
-      return { id: s.id, name: s.name, text: s.text };
+      return { id: s.id, name: s.name, text: s.text, redTeam: s.redTeam };
     };
 
     show(1, 'Case No. 002 is a greedy lease. Ask it whether the landlord can keep the deposit for wear and tear.');
@@ -98,6 +99,27 @@ export function useTour(controls: Controls) {
     await until(() => answered('Can I keep an animal in my home?'));
     show(5, "So it will not guess: Can't tell, and here is the clause to read yourself. No answer without a proof.");
     await wait(5600);
+    if (!alive()) return;
+
+    show(6, 'Case No. 005 hides a note to the AI reader. Watch the verifier strike it from the record.');
+    live.current.pick(sample('marrowgate-lofts'));
+    await until(ready);
+    await wait(1600);
+    if (!alive()) return;
+    live.current.submit('Can I get a dog?');
+    await until(() => answered('Can I keep an animal in my home?'));
+    await wait(150);
+    if (!alive()) return;
+    const struck = live.current.state.verification?.rejected.length ?? 0;
+    show(
+      6,
+      `Case No. 005 hides a note to the AI reader. The verifier struck ${struck} ${struck === 1 ? 'fact' : 'facts'} from the record, and the answer is Can't tell.`,
+    );
+    // Put the struck lines in view (without a smooth scroll under reduced motion).
+    document
+      .querySelector('[data-testid="struck-list"]')
+      ?.scrollIntoView({ block: 'nearest', behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+    await wait(6400);
     if (alive()) setFrame(null);
   }, []);
 
