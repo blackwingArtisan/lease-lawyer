@@ -44,9 +44,35 @@ export interface LeaseFact extends CandidateFact {
   end: number;
 }
 
+/** Why the verifier rejected a candidate fact. */
+export type RejectionCode =
+  | 'unknown_predicate'
+  | 'bad_arguments'
+  | 'unknown_clause'
+  | 'quote_too_short'
+  | 'quote_not_found'
+  | 'reader_directed'
+  | 'cue_mismatch';
+
 export interface RejectedFact {
   candidate: CandidateFact;
   reason: string;
+  code: RejectionCode;
+  /** Printed section number of the cited clause, or null when the clause id is unknown. */
+  section: number | null;
+}
+
+export type ReaderDirectedRule = 'salutation' | 'obligation' | 'command' | 'heading' | 'continuation';
+
+/** One sentence addressed to a reader, assistant, model or machine instead of the tenant or landlord. */
+export interface ReaderDirectedSpan {
+  clauseId: string;
+  number: number;
+  /** Offsets in the full lease text. */
+  start: number;
+  end: number;
+  text: string;
+  rule: ReaderDirectedRule;
 }
 
 /**
@@ -59,6 +85,8 @@ export interface UnreadClause {
   /** Section number and heading as printed, for messages. */
   number: number;
   title: string;
+  /** True when the cue words sit in text addressed to automated readers. */
+  readerDirected?: boolean;
 }
 
 export interface VerificationResult {
@@ -66,4 +94,6 @@ export interface VerificationResult {
   rejected: RejectedFact[];
   /** Set by the coverage check after verification, for every reader. */
   unread: UnreadClause[];
+  /** Sentences addressed to automated readers. Reader-independent. */
+  readerDirected: ReaderDirectedSpan[];
 }

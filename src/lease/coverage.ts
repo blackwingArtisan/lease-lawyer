@@ -1,5 +1,5 @@
 import { sentences } from './parse';
-import type { ParsedLease, UnreadClause } from './types';
+import type { ParsedLease, ReaderDirectedSpan, UnreadClause } from './types';
 
 /**
  * The coverage check. It does not read facts; it notices where a reader may
@@ -58,14 +58,14 @@ export const CUES: readonly CueSpec[] = [
     predicate: 'deposit_deduction',
     subject: 'what may be deducted from the deposit',
     // "Non-refundable" and "forfeit" say what happens to the deposit, so a clause with them is never silent.
-    cue: /\b(?:deduct\w*|withh[eo]ld\w*|forfeit\w*|retain\w*)\b|wear (?:and|&) tear|\bnon-?refundable\b|\bnot\s+(?:be\s+)?refund(?:able|ed)\b/i,
+    cue: /\b(?:deduct\w*|withh[eo]ld\w*|forfeit\w*|retain\w*)\b|wear (?:and|&) tear|\b(?:ordinary|normal|reasonable) wear\b|\bapply\w*\b[^.]*\b(?:deposit|security)\b[^.]*\b(?:damage|wear)\b|\bnon-?refundable\b|\bnot\s+(?:be\s+)?refund(?:able|ed)\b/i,
     needs: /\bdeposit\b|\bsecurity\b/i,
     strip: PET_DEPOSIT,
   },
   {
     predicate: 'term',
     subject: 'the length of the lease',
-    cue: /month[- ]to[- ]month|\bperiodic tenancy\b|\b(?:beginning|begins?|commenc\w+|starts?|starting)\b[^.]*\b(?:ending|ends?|expir\w+|through|until)\b/i,
+    cue: /month[- ]to[- ]month|\bperiodic tenancy\b|\b(?:beginning|begins?|commenc\w+|starts?|starting)\b[^.]*\b(?:ending|ends?|expir\w+|terminat\w+|through|until)\b|\b(?:runs?|running)\b[^.]*\b(?:through|until|months?|years?)\b/i,
     titleCue: /\b(?:term|lease term|lease period|length of (?:the )?lease|lease length|duration|tenancy|period of (?:the )?lease)\b/i,
   },
   {
@@ -129,10 +129,38 @@ export const CUES: readonly CueSpec[] = [
 const ELSEWHERE = /\b(?:schedule|rider|exhibit|addendum|attachment|appendix)\s+(?:[A-Z]|\d{1,2})\b/i;
 
 const SUBJECTS = new Map(CUES.map((c) => [c.predicate, c.subject]));
+const CUE_BY_PREDICATE = new Map(CUES.map((c) => [c.predicate, c]));
 
 /** A few words naming what a predicate is about, e.g. "pets" for pet_policy. */
 export function cueSubject(predicate: string): string {
   return SUBJECTS.get(predicate) ?? predicate;
+}
+
+/**
+ * True when a clause heading has the predicate's cue words or its `titleCue`.
+ * The extractor reads some facts from sentences whose heading supplies the
+ * topic ("SECURITY. Owner may apply the security to damage ..."), as the
+ * coverage check does, so the verifier's cross-check accepts that too.
+ */
+export function cueMatchesHeading(predicate: string, title: string): boolean {
+  const spec = CUE_BY_PREDICATE.get(predicate);
+  if (!spec) return false;
+  const clean = spec.strip ? title.replace(spec.strip, ' ') : title;
+  return cueMatches(predicate, title) || (spec.titleCue?.test(clean) ?? false);
+}
+
+/**
+ * True when `text` (one sentence or a clause heading) has the predicate's cue
+ * words, after the predicate's `strip` is removed and unless its `ignore`
+ * matches. `needs` is not applied, because a clause heading may supply it.
+ * A predicate with no cue entry never matches. The coverage check and the
+ * verifier's cross-check both use this, so they cannot drift apart.
+ */
+export function cueMatches(predicate: string, text: string): boolean {
+  const spec = CUE_BY_PREDICATE.get(predicate);
+  if (!spec) return false;
+  const clean = spec.strip ? text.replace(spec.strip, ' ') : text;
+  return spec.cue.test(clean) && !(spec.ignore?.test(clean) ?? false);
 }
 
 /** What the reader got from each clause: the predicate and the clause it was read from. */
@@ -145,7 +173,7 @@ export interface CoveredFact {
  * Returns every (predicate, clause) pair where the clause has the predicate's
  * cue words but no verified fact for that predicate came from it.
  */
-export function findUnread(lease: ParsedLease, covered: readonly CoveredFact[]): UnreadClause[] {
+export function findUnread(lease: ParsedLease, covered: readonly CoveredFact[], readerDirected: readonly ReaderDirectedSpan[] = []): UnreadClause[] {
   const read = new Set(covered.map((f) => `${f.predicate}@${f.clauseId}`));
   const out: UnreadClause[] = [];
   for (const clause of lease.clauses) {
@@ -157,12 +185,34 @@ export function findUnread(lease: ParsedLease, covered: readonly CoveredFact[]):
       if (spec.needs && !spec.needs.test(whole) && !ELSEWHERE.test(whole)) continue;
       const hit =
         (spec.titleCue?.test(clean(clause.title)) ?? false) ||
-        [clause.title, ...parts].some((text) => {
-          const c = clean(text);
-          return spec.cue.test(c) && !(spec.ignore?.test(c) ?? false);
-        });
+        [clause.title, ...parts].some((text) => cueMatches(spec.predicate, text));
       if (hit) out.push({ predicate: spec.predicate, clauseId: clause.id, number: clause.number, title: clause.title });
     }
   }
-  return out;
+  return markReaderDirected(lease, out, readerDirected);
+}
+
+/**
+ * Second pass: a reader-directed sentence with a predicate's cue words makes
+ * that predicate unread for its clause, whether or not another sentence of the
+ * clause has a kept fact and whether or not any reader proposed one. An entry
+ * the first pass already made for the same clause is marked, not duplicated.
+ * Unread only blocks "the lease is silent" proofs; it never weakens a proof
+ * that rests on a kept fact.
+ */
+function markReaderDirected(lease: ParsedLease, unread: UnreadClause[], spans: readonly ReaderDirectedSpan[]): UnreadClause[] {
+  if (spans.length === 0) return unread;
+  const out = unread.map((u) => ({ ...u }));
+  for (const span of spans) {
+    const clause = lease.clauses.find((c) => c.id === span.clauseId);
+    if (!clause) continue;
+    for (const spec of CUES) {
+      const titleHit = span.rule === 'heading' && (spec.titleCue?.test(clause.title) ?? false);
+      if (!titleHit && !cueMatches(spec.predicate, span.text)) continue;
+      const existing = out.find((u) => u.predicate === spec.predicate && u.clauseId === clause.id);
+      if (existing) existing.readerDirected = true;
+      else out.push({ predicate: spec.predicate, clauseId: clause.id, number: clause.number, title: clause.title, readerDirected: true });
+    }
+  }
+  return out.sort((a, b) => a.number - b.number || CUES.findIndex((c) => c.predicate === a.predicate) - CUES.findIndex((c) => c.predicate === b.predicate));
 }

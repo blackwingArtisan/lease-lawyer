@@ -28,6 +28,8 @@ export interface UnreadSection {
   title: string;
   /** What the section seems to be about, e.g. "pets". */
   subjects: string[];
+  /** True when a cue word sits in text addressed to automated readers. */
+  readerDirected: boolean;
 }
 
 export interface Answer {
@@ -215,7 +217,8 @@ function absentPredicates(nodes: ProofNode[]): string[] {
 function unreadSections(blocked: UnreadClause[]): UnreadSection[] {
   const byClause = new Map<string, UnreadSection>();
   for (const u of blocked) {
-    const section = byClause.get(u.clauseId) ?? { clauseId: u.clauseId, number: u.number, title: u.title, subjects: [] };
+    const section = byClause.get(u.clauseId) ?? { clauseId: u.clauseId, number: u.number, title: u.title, subjects: [], readerDirected: false };
+    if (u.readerDirected) section.readerDirected = true;
     const subject = cueSubject(u.predicate);
     if (!section.subjects.includes(subject)) section.subjects.push(subject);
     byClause.set(u.clauseId, section);

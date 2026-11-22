@@ -98,15 +98,15 @@ describe('rules on synthetic facts', () => {
     expect(rootRule(sublet)).toBe('sublet_allowed');
   });
 
-  it('never proves both yes and no for any topic and any tenant answers', async () => {
-    const leases = ['wychwood-arms', 'gaslight-row', 'cobweb-court'].map((id) => sample(id).facts);
+  it('never proves both yes and no for any topic and any tenant answers (Req 9.8)', async () => {
+    const leases = ['wychwood-arms', 'gaslight-row', 'cobweb-court', 'hollowmere-flats', 'marrowgate-lofts'].map((id) => sample(id));
     const names = TENANT_FACTS.map((t) => t.name);
-    for (const leaseFacts of leases) {
+    for (const lease of leases) {
       for (const topic of TOPICS) {
         for (const value of [true, false]) {
           const tenant = names.map((name) => ({ name, value, source: 'answer' as const }));
-          const a = await ask({ topic: topic.id, facts: leaseFacts, tenant });
-          expect(a.conflict, `${topic.id} with all ${value}`).toBe(false);
+          const a = await ask({ topic: topic.id, facts: lease.facts, tenant, unread: lease.unread });
+          expect(a.conflict, `${lease.lease.id} ${topic.id} with all ${value}`).toBe(false);
         }
       }
     }

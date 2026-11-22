@@ -63,7 +63,8 @@ export function CaseFiles({ selected, onPick }: Props) {
   return (
     <div className="case-files">
       <ul className="case-grid" role="list">
-        {SAMPLE_LEASES.map((s, i) => (
+        {/* Case No. 005 (the red-team sample) stays off the shelf until the tour and reader wiring (tasks 13 and 16) land. */}
+        {SAMPLE_LEASES.filter((s) => !s.redTeam).map((s, i) => (
           <li key={s.id}>
             <button
               type="button"

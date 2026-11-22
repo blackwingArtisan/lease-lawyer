@@ -1,0 +1,148 @@
+{
+ "wychwood-arms": {
+  "facts": [
+   "f1 term(fixed)@s3 474-573",
+   "f2 monthly_rent(1850)@s4 659-744",
+   "f3 late_fee(75)@s5 908-1011",
+   "f4 late_fee_grace_days(5)@s5 908-1011",
+   "f5 security_deposit(1850)@s6 1086-1158",
+   "f6 deposit_deduction(damage_beyond_wear)@s6 1159-1274",
+   "f7 pet_policy(prohibited)@s8 1666-1716",
+   "f8 entry_notice_hours(24)@s9 1819-1939",
+   "f9 sublet_policy(consent_required)@s11 2227-2331",
+   "f10 early_termination_option(job_relocation,60,1)@s12 2375-2624"
+  ],
+  "factsDigest": "32a82f29eaba",
+  "unread": [],
+  "rejected": 0,
+  "verdicts": {
+   "wear_and_tear": "nnnnnnnnnnnnnnn",
+   "early_termination": "?yny?y?????????",
+   "pets": "?yn????yn??????",
+   "entry_without_notice": "nynnnnnnnynnnnn",
+   "late_fee": "yyyyyyyyyyyyyyy",
+   "sublet": "yyyyyyyyyyyyyyy",
+   "repair_and_deduct": "?yn?????????n??",
+   "rent_increase": "nnnnnnnnnnnnnnn"
+  },
+  "answers": {
+   "wear_and_tear": "be217e4ba105",
+   "early_termination": "5573eea3d927",
+   "pets": "3ef9b76b2e3d",
+   "entry_without_notice": "8438743a01d3",
+   "late_fee": "e3cb77ad949b",
+   "sublet": "98b18b6ad86e",
+   "repair_and_deduct": "701fa46ac470",
+   "rent_increase": "ada7d3217aa3"
+  }
+ },
+ "gaslight-row": {
+  "facts": [
+   "f1 term(fixed)@s3 284-343",
+   "f2 monthly_rent(2400)@s4 354-426",
+   "f3 rent_escalation_percent(3)@s4 427-529",
+   "f4 late_fee(100)@s5 548-653",
+   "f5 late_fee_grace_days(3)@s5 548-653",
+   "f6 security_deposit(3600)@s6 676-740",
+   "f7 deposit_deduction(normal_wear_and_tear)@s6 741-906",
+   "f8 pet_policy(allowed)@s7 917-984",
+   "f9 pet_deposit(500)@s7 917-984",
+   "f10 entry_notice_hours(12)@s8 1065-1170",
+   "f11 repair_deduct_waiver()@s9 1268-1338",
+   "f12 sublet_policy(prohibited)@s10 1356-1438",
+   "f13 early_termination_option(any,30,2)@s11 1463-1625"
+  ],
+  "factsDigest": "15d83c8d6d9b",
+  "unread": [],
+  "rejected": 0,
+  "verdicts": {
+   "wear_and_tear": "nnnnnnnnnnnnnnn",
+   "early_termination": "yyyyyyyyyyyyyyy",
+   "pets": "yyyyyyyyyyyyyyy",
+   "entry_without_notice": "nynnnnnnnynnnnn",
+   "late_fee": "nnnnnnnnnnnnnnn",
+   "sublet": "nnnnnnnnnnnnnnn",
+   "repair_and_deduct": "?yn?????????n??",
+   "rent_increase": "yyyyyyyyyyyyyyy"
+  },
+  "answers": {
+   "wear_and_tear": "b12900db12d0",
+   "early_termination": "20e03ea87a36",
+   "pets": "4d3c3f1ec497",
+   "entry_without_notice": "4fd871c42b77",
+   "late_fee": "a2aa7be56164",
+   "sublet": "6e82eb354d83",
+   "repair_and_deduct": "5bc73fa9b277",
+   "rent_increase": "9c99d947f336"
+  }
+ },
+ "cobweb-court": {
+  "facts": [
+   "f1 term(fixed)@s3 242-343",
+   "f2 monthly_rent(1450)@s4 354-422",
+   "f3 late_fee(150)@s5 441-529",
+   "f4 late_fee_grace_days(1)@s5 441-529",
+   "f5 security_deposit(1450)@s6 552-600"
+  ],
+  "factsDigest": "d59bbfd53d75",
+  "unread": [],
+  "rejected": 0,
+  "verdicts": {
+   "wear_and_tear": "nnnnnnnnnnnnnnn",
+   "early_termination": "?yn??yn????????",
+   "pets": "yyyyyyyyyyyyyyy",
+   "entry_without_notice": "nynnnnnnnynnnnn",
+   "late_fee": "nnnnnnnnnnnnnnn",
+   "sublet": "yyyyyyyyyyyyyyy",
+   "repair_and_deduct": "?yn?????????n??",
+   "rent_increase": "nnnnnnnnnnnnnnn"
+  },
+  "answers": {
+   "wear_and_tear": "7b6aa66e3868",
+   "early_termination": "84b93fbc2f0f",
+   "pets": "2273b854a3b4",
+   "entry_without_notice": "a2f8f1f2bc71",
+   "late_fee": "032dac288a74",
+   "sublet": "95265f273cf6",
+   "repair_and_deduct": "ceb98d95d0a9",
+   "rent_increase": "a73c562a1f96"
+  }
+ },
+ "hollowmere-flats": {
+  "facts": [
+   "f1 term(fixed)@s2 162-224",
+   "f2 monthly_rent(1750)@s3 235-307",
+   "f3 security_deposit(1750)@s4 330-394",
+   "f4 sublet_policy(consent_required)@s7 638-740",
+   "f5 late_fee(50)@s8 759-862",
+   "f6 late_fee_grace_days(5)@s8 759-862"
+  ],
+  "factsDigest": "866dfebfaa94",
+  "unread": [
+   "deposit_deduction@s4",
+   "pet_policy@s5",
+   "entry_notice_hours@s6"
+  ],
+  "rejected": 0,
+  "verdicts": {
+   "wear_and_tear": "???????????????",
+   "early_termination": "?yn??yn????????",
+   "pets": "?y?????y???????",
+   "entry_without_notice": "?y???????y?????",
+   "late_fee": "yyyyyyyyyyyyyyy",
+   "sublet": "yyyyyyyyyyyyyyy",
+   "repair_and_deduct": "?yn?????????n??",
+   "rent_increase": "nnnnnnnnnnnnnnn"
+  },
+  "answers": {
+   "wear_and_tear": "0f5de8070168",
+   "early_termination": "84b93fbc2f0f",
+   "pets": "ae4898df9de4",
+   "entry_without_notice": "23d13a6bb6c4",
+   "late_fee": "053082aa3c9a",
+   "sublet": "0d12dbce69c0",
+   "repair_and_deduct": "a2ced5784112",
+   "rent_increase": "018fa92e7524"
+  }
+ }
+}
