@@ -22,7 +22,8 @@
     "sample-pdf": "node scripts/make-sample-pdf.mjs",
     "media": "node scripts/capture-media.mjs",
     "mcp:prover": "vite build -c tools/mcp-prover/vite.config.ts && node tools/mcp-prover/dist/server.js",
-    "smoke:bedrock": "vite build -c tools/smoke-bedrock/vite.config.ts && node tools/smoke-bedrock/dist/smoke.js"
+    "smoke:bedrock": "vite build -c tools/smoke-bedrock/vite.config.ts && node tools/smoke-bedrock/dist/smoke.js",
+    "build:static": "VITE_AI_BACKEND=local vite build"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "5.3.0",
