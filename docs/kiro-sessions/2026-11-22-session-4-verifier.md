@@ -3,7 +3,7 @@
 - Tool: kiro-cli 3.5.0, v3 engine, non-interactive
 - Command (repo root, stdin closed): `PW_PORT=3860 kiro-cli chat --v3 --no-interactive --trust-workspace --trust-tools=fs_read,fs_write,run_command --output-format stream-json "<prompt>" </dev/null` (not `--trust-all-tools`)
 - When: 2026-11-22, 19:36:02 to 20:01:11 UTC (25 min 9 s wall time, under a 25-minute cap); exit code 143
-- Credits used: 0.00 (kiroween2026 `/usage` read 466.72 before and 529.42 after)
+- Credits used: not reported, because the session was stopped at its cap (kiroween2026 `/usage` read 466.72 before and 529.42 after)
 - Stopped by the watchdog at the 25-minute cap (exit code 143), with no sleep entries in the power log. Because the session was stopped, kiro-cli never sent its end-of-session credit event. The shared account balance moved 62.70 credits over the window, but other Kiro work was drawing on the same balance, so that is only an upper bound.
 - What Kiro built: all of Session A, tasks 1 to 11, each ticked in tasks.md.
   - A golden of the four existing samples, recorded before any source change.

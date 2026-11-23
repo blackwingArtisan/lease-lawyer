@@ -1,6 +1,6 @@
 // npm run smoke:bedrock [-- --yes] [--max-usd 1] [--out docs/bedrock-smoke]
 //
-// Reads the four sample leases and the two holdout leases with Claude on Amazon Bedrock,
+// Reads the five sample leases and the two holdout leases with Claude on Amazon Bedrock,
 // verifies every proposed fact exactly as the app does, and records the readings, the struck
 // quotes, the holdout scores and the cost. Without --yes it only prints the plan and an
 // estimate; nothing is sent. Credentials come from AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY,
