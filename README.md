@@ -4,6 +4,8 @@
 
 **Your landlord kept $600 of your $1,500 deposit for normal wear and tear. Ask your lease. Get a proof, or an honest Can't tell.**
 
+**Live demo: [lease-lawyer.pages.dev](https://lease-lawyer.pages.dev/)**. The default local reader runs in your browser, so the hosted copy needs no server or account.
+
 Chatbots guess about your lease. Lease Lawyer proves it, or says it can't tell.
 
 Ask a plain question ("Can my landlord keep my deposit for normal wear and tear?") and get Yes, No, or Can't tell. A Yes or No comes with a proof you can check: a 1970s logic engine works it out step by step, and every step quotes the exact clause it rests on. When the lease points somewhere the reader cannot follow, the answer is "Can't tell", with the section to read yourself.
